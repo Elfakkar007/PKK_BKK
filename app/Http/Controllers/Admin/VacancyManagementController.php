@@ -10,11 +10,7 @@ use Illuminate\Http\Request;
 
 class VacancyManagementController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:admin']);
-    }
-
+    
     public function index(Request $request)
     {
         $status = $request->get('status', 'all');

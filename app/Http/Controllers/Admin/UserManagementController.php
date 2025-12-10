@@ -10,10 +10,7 @@ use Illuminate\Http\Request;
 
 class UserManagementController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:admin']);
-    }
+    
 
     public function index(Request $request)
     {
