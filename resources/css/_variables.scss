@@ -1,0 +1,12 @@
+// Custom Bootstrap Variables
+$primary: #667eea;
+$success: #10b981;
+$danger: #ef4444;
+$warning: #f59e0b;
+$info: #3b82f6;
+
+$border-radius: 0.5rem;
+$border-radius-lg: 1rem;
+
+// Import Bootstrap
+@import '../../node_modules/bootstrap/scss/bootstrap';
