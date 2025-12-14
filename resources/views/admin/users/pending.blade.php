@@ -87,14 +87,13 @@
                                         @method('PATCH')
                                         <button type="submit" 
                                                 class="btn btn-outline-success"
-                                                onclick="return confirm('Approve user ini?')">
+                                                onclick="return confirmApprove(event, 'Approve user {{ $user->email }}?')">
                                             <i class="bi bi-check-circle"></i>
                                         </button>
                                     </form>
                                     <button type="button" 
                                             class="btn btn-outline-danger" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#rejectModal{{ $user->id }}">
+                                            onclick="showRejectModal({{ $user->id }}, '{{ $user->email }}')">
                                         <i class="bi bi-x-circle"></i>
                                     </button>
                                 </div>
@@ -183,46 +182,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Reject Modal -->
-                        <div class="modal fade" id="rejectModal{{ $user->id }}" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form method="POST" action="{{ route('admin.users.reject', $user->id) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Tolak User</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="alert alert-warning">
-                                                <i class="bi bi-exclamation-triangle me-2"></i>
-                                                Anda akan menolak user: <strong>
-                                                    @if($user->student)
-                                                        {{ $user->student->full_name }}
-                                                    @elseif($user->company)
-                                                        {{ $user->company->name }}
-                                                    @endif
-                                                </strong>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                <textarea class="form-control" 
-                                                          name="rejection_reason" 
-                                                          rows="3" 
-                                                          required 
-                                                          placeholder="Jelaskan alasan penolakan..."></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-danger">Tolak User</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -239,4 +198,56 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+function showRejectModal(userId, userEmail) {
+    Swal.fire({
+        title: 'Tolak User',
+        html: `
+            <div class="alert alert-warning text-start">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Anda akan menolak user: <strong>${userEmail}</strong>
+            </div>
+            <div class="mb-3 text-start">
+                <label class="form-label fw-bold">Alasan Penolakan <span class="text-danger">*</span></label>
+                <textarea id="rejection_reason" class="form-control" rows="3" placeholder="Jelaskan alasan penolakan..."></textarea>
+            </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Tolak User',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        preConfirm: () => {
+            const reason = document.getElementById('rejection_reason').value;
+            if (!reason) {
+                Swal.showValidationMessage('Alasan penolakan wajib diisi');
+                return false;
+            }
+            return reason;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Create form and submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/users/${userId}/reject`;
+            
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            form.innerHTML = `
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="rejection_reason" value="${result.value}">
+            `;
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
+@endpush
 @endsection

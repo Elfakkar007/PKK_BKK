@@ -97,7 +97,10 @@
                                     <form method="POST" action="{{ route('admin.vacancies.approve', $vacancy->id) }}" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-outline-success" title="Approve">
+                                        <button type="submit" 
+                                                class="btn btn-outline-success" 
+                                                title="Approve"
+                                                onclick="return confirmApprove(event, 'Approve lowongan {{ $vacancy->title }}?')">
                                             <i class="bi bi-check-circle"></i>
                                         </button>
                                     </form>
@@ -107,7 +110,7 @@
                                     @method('DELETE')
                                     <button type="submit" 
                                             class="btn btn-outline-danger"
-                                            onclick="return confirm('Yakin ingin menghapus lowongan ini?')">
+                                            onclick="return confirmDelete(event, 'Lowongan dan semua lamaran terkait akan dihapus!')">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>

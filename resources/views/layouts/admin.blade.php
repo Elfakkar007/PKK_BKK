@@ -6,10 +6,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel - BKK SMKN 1 Purwosari')</title>
     
-    {{-- Gunakan Vite untuk load CSS dan JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    {{-- Favicon --}}
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
     <style>
@@ -236,18 +238,53 @@
 
         <!-- Page Content -->
         <div class="p-4">
+            <!-- SweetAlert Messages -->
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show">
-                    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#0d6efd',
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+                });
+            </script>
             @endif
             
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#dc3545',
+                    });
+                });
+            </script>
+            @endif
+            
+            @if($errors->any())
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    let errorList = '<ul class="text-start mb-0">';
+                    @foreach($errors->all() as $error)
+                        errorList += '<li>{{ $error }}</li>';
+                    @endforeach
+                    errorList += '</ul>';
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terdapat Kesalahan',
+                        html: errorList,
+                        confirmButtonColor: '#dc3545',
+                        width: '600px',
+                    });
+                });
+            </script>
             @endif
             
             @yield('content')
@@ -271,6 +308,51 @@
                 }
             }
         });
+        
+        // Global confirmation functions
+        function confirmDelete(event, message = 'Data yang dihapus tidak dapat dikembalikan!') {
+            event.preventDefault();
+            const form = event.target.closest('form');
+            
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+            return false;
+        }
+        
+        function confirmApprove(event, message = 'Approve data ini?') {
+            event.preventDefault();
+            const form = event.target.closest('form');
+            
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Approve!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+            return false;
+        }
     </script>
     
     @stack('scripts')

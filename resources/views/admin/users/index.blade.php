@@ -97,7 +97,10 @@
                                     <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-success" title="Approve">
+                                        <button type="submit" 
+                                                class="btn btn-success" 
+                                                title="Approve"
+                                                onclick="return confirmApprove(event, 'Approve user {{ $user->email }}?')">
                                             <i class="bi bi-check-circle"></i>
                                         </button>
                                     </form>
@@ -107,8 +110,8 @@
                                     @method('DELETE')
                                     <button type="submit" 
                                             class="btn btn-danger"
-                                            onclick="return confirm('Yakin ingin menghapus user ini?')"
-                                            title="Hapus">
+                                            title="Hapus"
+                                            onclick="return confirmDelete(event, 'User dan semua data terkait akan dihapus!')">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
