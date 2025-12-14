@@ -6,23 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'BKK SMKN 1 Purwosari')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- ICO for legacy browsers -->
-    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
-    
-    <!-- PNG icons for modern browsers -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
-    
-    <!-- Apple Touch Icon (iOS) -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
-    
-    <!-- Android Chrome -->
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/android-chrome-192x192.png') }}">
-    
-    {{-- Manifest untuk PWA (opsional) --}}
-    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+  
     @stack('styles')
 </head>
 <body>
