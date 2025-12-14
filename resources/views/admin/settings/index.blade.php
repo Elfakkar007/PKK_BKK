@@ -130,7 +130,7 @@
                                class="form-control" 
                                name="site_logo" 
                                accept="image/*">
-                        <small class="text-muted">Format: PNG dengan background transparan (recommended). Maksimal 1MB</small>
+                        <small class="text-muted">Format: PNG dengan background transparan (recommended). Maksimal 2MB</small>
                     </div>
 
                     <hr class="my-4">

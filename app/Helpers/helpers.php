@@ -167,12 +167,27 @@ if (!function_exists('calculate_age')) {
     }
 }
 
-if (!function_exists('settings')) {
-    /**
-     * Get setting value by key
-     */
-    function settings($key, $default = null)
-    {
-        return \App\Models\Setting::get($key, $default);
+    if (!function_exists('settings')) {
+        /**
+         * Get setting value by key
+         */
+        function settings($key, $default = null)
+        {
+            return \App\Models\Setting::get($key, $default);
+        }
+
+        if (!function_exists('is_deadline_approaching')) {
+        /**
+         * Check if deadline is approaching (within 7 days)
+         */
+        function is_deadline_approaching($deadline)
+        {
+            if (!$deadline) return false;
+            
+            $deadline = \Carbon\Carbon::parse($deadline);
+            $now = \Carbon\Carbon::now();
+            
+            return $deadline->diffInDays($now) <= 7 && $deadline->isFuture();
+        }
     }
 }
