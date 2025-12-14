@@ -24,7 +24,17 @@
                 </div>
             </div>
             <div class="col-lg-6 text-center">
-                <img src="{{ asset('images/hero-illustration.png') }}" alt="Hero" class="img-fluid" style="max-height: 400px;" onerror="this.src='https://via.placeholder.com/500x400?text=BKK+SMKN+1+Purwosari'">
+                <!-- Gunakan CSS placeholder jika gambar tidak ada -->
+                @if(file_exists(public_path('images/hero-illustration.png')))
+                    <img src="{{ asset('images/hero-illustration.png') }}" alt="Hero" class="img-fluid" style="max-height: 400px;">
+                @else
+                    <div class="hero-placeholder bg-white bg-opacity-25 rounded-4 d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <div class="text-white text-center">
+                            <i class="bi bi-briefcase-fill" style="font-size: 100px;"></i>
+                            <h3 class="mt-3">BKK SMKN 1 Purwosari</h3>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
