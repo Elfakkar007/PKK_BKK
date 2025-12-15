@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Lamaran - BKK SMKN 1 Purwosari')
+@section('title', 'Kelola Lamaran')
 
 @section('content')
 <div class="container py-5">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $company->name . ' - BKK SMKN 1 Purwosari')
+@section('title', $company->name)
 
 @section('content')
 <div class="container py-5">

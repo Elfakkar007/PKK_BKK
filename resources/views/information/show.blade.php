@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $post->title . ' - BKK SMKN 1 Purwosari')
+@section('title', $post->title)
 
 @push('styles')
 @if($post->isDocumentation())

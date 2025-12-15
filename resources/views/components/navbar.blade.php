@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo BKK" onerror="this.style.display='none'">
+            <img src="{{ Storage::url($app_settings['site_logo'] ?? 'default.png') }}" alt="Logo BKK" onerror="this.style.display='none'">
             <span>BKK SMKN 1 Purwosari</span>
         </a>
         

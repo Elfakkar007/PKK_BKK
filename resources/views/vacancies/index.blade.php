@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Lowongan Pekerjaan - BKK SMKN 1 Purwosari')
+@section('title', 'Lowongan Pekerjaan')
 
 @section('content')
 <!-- Page Header -->

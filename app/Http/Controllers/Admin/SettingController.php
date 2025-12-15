@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -20,10 +21,10 @@ class SettingController extends Controller
 
     /**
      * Update settings
+     * FIXED: Better error handling and cache clearing
      */
     public function update(Request $request)
     {
-        // Validasi input
         $validated = $request->validate([
             'site_name' => 'nullable|string|max:255',
             'site_tagline' => 'nullable|string|max:255',
@@ -44,10 +45,10 @@ class SettingController extends Controller
         ]);
 
         try {
-            // Ambil semua settings kecuali file upload dan meta fields
+            // Get all settings except file upload and meta fields
             $settings = $request->except(['_token', '_method', 'site_logo']);
 
-            // Convert checkbox values (jika tidak di-check, tidak akan ada di request)
+            // Convert checkbox values
             $checkboxFields = [
                 'feature_registration',
                 'feature_apply_job', 
@@ -59,24 +60,36 @@ class SettingController extends Controller
                 $settings[$field] = $request->has($field) ? '1' : '0';
             }
 
-            // Simpan semua settings
+            // Save all settings one by one
             foreach ($settings as $key => $value) {
                 Setting::set($key, $value ?? '');
+                Log::info("Setting saved: {$key} = " . ($value ?? 'NULL'));
             }
 
             // Handle logo upload
             if ($request->hasFile('site_logo')) {
-                $this->handleLogoUpload($request->file('site_logo'));
+                $logoPath = $this->handleLogoUpload($request->file('site_logo'));
+                Setting::set('site_logo', $logoPath);
+                Log::info("Logo uploaded: {$logoPath}");
             }
 
-            // Clear cache
+            // CRITICAL: Clear all cache
             Setting::clearCache();
+            Cache::flush(); // Force clear all cache
+            
+            // Clear Laravel cache
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('view:clear');
+            
+            Log::info("Settings updated successfully and cache cleared");
 
             return redirect()->route('admin.settings.index')
-                ->with('success', 'Settings berhasil diperbarui!');
+                ->with('success', 'Settings berhasil diperbarui! Cache telah dibersihkan.');
 
         } catch (\Exception $e) {
             Log::error('Error updating settings: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return redirect()->route('admin.settings.index')
                 ->with('error', 'Gagal memperbarui settings: ' . $e->getMessage());
@@ -89,19 +102,19 @@ class SettingController extends Controller
     private function handleLogoUpload($file)
     {
         try {
-            // Hapus logo lama jika ada
+            // Delete old logo if exists
             $oldLogo = Setting::get('site_logo');
             if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
                 Storage::disk('public')->delete($oldLogo);
+                Log::info("Old logo deleted: {$oldLogo}");
             }
 
-            // Upload logo baru dengan nama yang di-sanitize
+            // Upload new logo
             $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('settings/logos', $filename, 'public');
             
-            // Simpan path ke database
-            Setting::set('site_logo', $path);
-
+            Log::info("New logo uploaded: {$path}");
+            
             return $path;
 
         } catch (\Exception $e) {
@@ -112,6 +125,7 @@ class SettingController extends Controller
 
     /**
      * Clear application cache (AJAX endpoint)
+     * FIXED: Return proper JSON response
      */
     public function clearCache(Request $request)
     {
@@ -124,8 +138,10 @@ class SettingController extends Controller
             
             // Clear settings cache specifically
             Setting::clearCache();
+            
+            // Force clear all cache
+            Cache::flush();
 
-            // Log the action
             Log::info('Cache cleared by admin: ' . auth()->user()->email);
 
             // ALWAYS return JSON for AJAX requests
@@ -137,37 +153,51 @@ class SettingController extends Controller
         } catch (\Exception $e) {
             Log::error('Error clearing cache: ' . $e->getMessage());
 
-            // ALWAYS return JSON for errors too
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal menghapus cache: ' . $e->getMessage()
             ], 500);
         }
     }
+
     /**
-     * Get specific setting value (API endpoint - optional)
+     * Get specific setting value (API endpoint)
      */
     public function getSetting(Request $request, $key)
     {
-        $value = Setting::get($key);
-        
-        return response()->json([
-            'success' => true,
-            'key' => $key,
-            'value' => $value
-        ]);
+        try {
+            $value = Setting::get($key);
+            
+            return response()->json([
+                'success' => true,
+                'key' => $key,
+                'value' => $value
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Get all settings (API endpoint - optional)
+     * Get all settings (API endpoint)
      */
     public function getAllSettings(Request $request)
     {
-        $settings = Setting::all();
-        
-        return response()->json([
-            'success' => true,
-            'settings' => $settings
-        ]);
+        try {
+            $settings = Setting::getAllSettings();
+            
+            return response()->json([
+                'success' => true,
+                'settings' => $settings
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

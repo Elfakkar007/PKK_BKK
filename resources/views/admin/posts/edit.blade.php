@@ -24,7 +24,7 @@
     <div class="col-lg-10 mx-auto">
         <div class="card">
             <div class="card-body p-4">
-                <form method="POST" action="{{ route('admin.posts.update', $post->id) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.posts.update', $post) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 

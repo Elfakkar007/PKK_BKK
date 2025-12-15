@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Perusahaan - BKK SMKN 1 Purwosari')
+@section('title', 'Dashboard Perusahaan')
 
 @section('content')
 <div class="bg-primary text-white py-4">

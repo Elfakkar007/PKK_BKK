@@ -7,10 +7,10 @@
                     Bursa Kerja Khusus yang menghubungkan siswa dan alumni dengan perusahaan mitra untuk peluang karir terbaik.
                 </p>
                 <div class="social-links">
-                    <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a>
-                    <a href="https://www.instagram.com/bkksmknpur?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
-                    <a href="#" class="text-white me-3"><i class="bi bi-twitter fs-4"></i></a>
-                    <a href="https://youtube.com/@officialsmkn1purwosari?si=7G1bEf851LwL0bDr" class="text-white"><i class="bi bi-youtube fs-4"></i></a>
+                    <a href="{{ $app_settings['social_facebook'] ?? '#' }}" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a> 
+                    <a href="{{ $app_settings['social_instagram'] ?? '#' }}" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+                    <a href="{{ $app_settings['social_twitter'] ?? '#' }}" class="text-white me-3"><i class="bi bi-twitter fs-4"></i></a>
+                    <a href="{{ $app_settings['social_youtube'] ?? '#' }}" class="text-white"><i class="bi bi-youtube fs-4"></i></a>
                 </div>
             </div>
             

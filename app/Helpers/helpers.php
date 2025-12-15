@@ -168,26 +168,35 @@ if (!function_exists('calculate_age')) {
 }
 
     if (!function_exists('settings')) {
-        /**
-         * Get setting value by key
-         */
-        function settings($key, $default = null)
-        {
-            return \App\Models\Setting::get($key, $default);
+    /**
+     * Get setting value by key
+     * FIXED: Added proper error handling and default value support
+     */
+    function settings($key, $default = null)
+    {
+        try {
+            // Try to get from cache first (with shorter cache time)
+            $cacheKey = "setting_{$key}";
+            
+            return \Illuminate\Support\Facades\Cache::remember($cacheKey, 300, function () use ($key, $default) {
+                $setting = \App\Models\Setting::where('key', $key)->first();
+                return $setting ? $setting->value : $default;
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Error getting setting {$key}: " . $e->getMessage());
+            return $default;
         }
+    }
+}
 
-        if (!function_exists('is_deadline_approaching')) {
-        /**
-         * Check if deadline is approaching (within 7 days)
-         */
-        function is_deadline_approaching($deadline)
-        {
-            if (!$deadline) return false;
-            
-            $deadline = \Carbon\Carbon::parse($deadline);
-            $now = \Carbon\Carbon::now();
-            
-            return $deadline->diffInDays($now) <= 7 && $deadline->isFuture();
-        }
+if (!function_exists('is_deadline_approaching')) {
+    function is_deadline_approaching($deadline)
+    {
+        if (!$deadline) return false;
+        
+        $deadline = \Carbon\Carbon::parse($deadline);
+        $now = \Carbon\Carbon::now();
+        
+        return $deadline->diffInDays($now) <= 7 && $deadline->isFuture();
     }
 }

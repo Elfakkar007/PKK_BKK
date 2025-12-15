@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard Admin - BKK SMKN 1 Purwosari')
+@section('title', 'Dashboard Admin')
 @section('page-title', 'Dashboard')
 
 @section('content')

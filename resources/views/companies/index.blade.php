@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Perusahaan Mitra - BKK SMKN 1 Purwosari')
+@section('title', 'Perusahaan Mitra')
 
 @section('content')
 <!-- Page Header -->

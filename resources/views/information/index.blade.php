@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Informasi - BKK SMKN 1 Purwosari')
+@section('title', 'Informasi')
 
 @push('styles')
 <style>

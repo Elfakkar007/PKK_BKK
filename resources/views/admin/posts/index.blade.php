@@ -95,13 +95,13 @@
                                         <i class="bi bi-eye"></i>
                                     </a>
                                 @endif
-                                <a href="{{ route('admin.posts.edit', $post->id) }}" 
+                                <a href="{{ route('admin.posts.edit', $post) }}"
                                    class="btn btn-outline-primary"
                                    title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <form method="POST" 
-                                      action="{{ route('admin.posts.destroy', $post->id) }}" 
+                                      action="{{ route('admin.posts.destroy', $post) }}" 
                                       class="d-inline delete-form"
                                       data-title="Hapus Postingan"
                                       data-text="Yakin ingin menghapus postingan '{{ Str::limit($post->title, 30) }}'?">

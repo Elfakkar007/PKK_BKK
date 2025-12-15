@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Beranda - BKK SMKN 1 Purwosari')
+@section('title', 'Beranda')
 
 @section('content')
 <!-- Hero Section -->
