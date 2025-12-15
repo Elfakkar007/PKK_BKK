@@ -90,27 +90,36 @@
                         <td class="text-center">
                             <div class="btn-group btn-group-sm">
                                 <a href="{{ route('admin.vacancies.show', $vacancy->id) }}" 
-                                   class="btn btn-outline-info">
+                                   class="btn btn-outline-info"
+                                   title="Lihat Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 @if($vacancy->status === 'pending')
-                                    <form method="POST" action="{{ route('admin.vacancies.approve', $vacancy->id) }}" class="d-inline">
+                                    <form method="POST" 
+                                          action="{{ route('admin.vacancies.approve', $vacancy->id) }}" 
+                                          class="d-inline approve-form"
+                                          data-title="Approve Lowongan"
+                                          data-text="Approve lowongan '{{ $vacancy->title }}'?">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" 
-                                                class="btn btn-outline-success" 
-                                                title="Approve"
-                                                onclick="return confirmApprove(event, 'Approve lowongan {{ $vacancy->title }}?')">
+                                                class="btn btn-outline-success approve-btn" 
+                                                title="Approve">
                                             <i class="bi bi-check-circle"></i>
                                         </button>
                                     </form>
                                 @endif
-                                <form method="POST" action="{{ route('admin.vacancies.destroy', $vacancy->id) }}" class="d-inline">
+                                <form method="POST" 
+                                      action="{{ route('admin.vacancies.destroy', $vacancy->id) }}" 
+                                      class="d-inline delete-form"
+                                      data-title="Hapus Lowongan"
+                                      data-text="Lowongan '{{ $vacancy->title }}' dan semua lamaran terkait akan dihapus!"
+                                      data-html="true">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
-                                            class="btn btn-outline-danger"
-                                            onclick="return confirmDelete(event, 'Lowongan dan semua lamaran terkait akan dihapus!')">
+                                            class="btn btn-outline-danger delete-btn"
+                                            title="Hapus">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -134,3 +143,63 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle approve confirmation
+    const approveForms = document.querySelectorAll('.approve-form');
+    approveForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.dataset.title || 'Konfirmasi Approve';
+            const text = this.dataset.text || 'Approve data ini?';
+            
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Approve!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+
+    // Handle delete confirmation
+    const deleteForms = document.querySelectorAll('.delete-form');
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.dataset.title || 'Konfirmasi Hapus';
+            const text = this.dataset.text || 'Yakin ingin menghapus data ini?';
+            
+            Swal.fire({
+                title: title,
+                html: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush

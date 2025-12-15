@@ -24,7 +24,10 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('company.profile.update') }}" enctype="multipart/form-data">
+            <form method="POST" 
+                  action="{{ route('company.profile.update') }}" 
+                  enctype="multipart/form-data"
+                  id="profileForm">
                 @csrf
                 @method('PUT')
 
@@ -245,7 +248,7 @@
                     <a href="{{ route('company.dashboard') }}" class="btn btn-outline-secondary">
                         Batal
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" onclick="confirmSubmitProfile()">
                         <i class="bi bi-save me-2"></i>Simpan Perubahan
                     </button>
                 </div>
@@ -282,7 +285,39 @@ function addBranch() {
 }
 
 function removeBranch(button) {
-    button.closest('.input-group').remove();
+    Swal.fire({
+        title: 'Hapus Cabang?',
+        text: 'Yakin ingin menghapus alamat cabang ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest('.input-group').remove();
+        }
+    });
+}
+
+function confirmSubmitProfile() {
+    Swal.fire({
+        title: 'Simpan Perubahan?',
+        text: 'Yakin ingin menyimpan perubahan profile perusahaan?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('profileForm').submit();
+        }
+    });
 }
 </script>
 @endpush

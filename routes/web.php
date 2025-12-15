@@ -104,8 +104,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     
     // Highlights Management
     Route::resource('highlights', HighlightManagementController::class);
-    
+        // Clear Cache
+    Route::post('/cache/clear', [SettingController::class, 'clearCache'])->name('cache.clear');
     // Settings
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingController::class, 'index'])->name('index');
+        Route::put('/update', [SettingController::class, 'update'])->name('update');
+        
+        // Optional: API endpoints for getting settings
+        Route::get('/api/{key}', [SettingController::class, 'getSetting'])->name('api.get');
+        Route::get('/api', [SettingController::class, 'getAllSettings'])->name('api.all');
+    });
 });

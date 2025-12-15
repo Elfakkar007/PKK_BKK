@@ -8,7 +8,10 @@
     <div class="col-lg-8 mx-auto">
         <div class="card">
             <div class="card-body p-4">
-                <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
+                <form method="POST" 
+                      action="{{ route('admin.settings.update') }}" 
+                      enctype="multipart/form-data"
+                      id="settingsForm">
                     @csrf
                     @method('PUT')
 
@@ -123,13 +126,18 @@
                             <div class="mb-2">
                                 <img src="{{ Storage::url(settings('site_logo')) }}" 
                                      class="img-thumbnail" 
+                                     id="logoPreview"
                                      style="max-height: 80px;">
                             </div>
+                        @else
+                            <div class="mb-2" id="logoPreview"></div>
                         @endif
                         <input type="file" 
                                class="form-control" 
                                name="site_logo" 
-                               accept="image/*">
+                               id="siteLogo"
+                               accept="image/*"
+                               onchange="previewLogo(this)">
                         <small class="text-muted">Format: PNG dengan background transparan (recommended). Maksimal 2MB</small>
                     </div>
 
@@ -212,7 +220,7 @@
                         <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
                             <i class="bi bi-x-circle me-2"></i>Batal
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" onclick="confirmSaveSettings()">
                             <i class="bi bi-save me-2"></i>Simpan Settings
                         </button>
                     </div>
@@ -235,12 +243,181 @@
 
 @push('scripts')
 <script>
-function clearCache() {
-    if(confirm('Yakin ingin menghapus semua cache?')) {
-        // Implement cache clearing via AJAX
-        alert('Cache berhasil dihapus!');
+// Preview logo upload
+function previewLogo(input) {
+    if (input.files && input.files[0]) {
+        // Validate file size (2MB)
+        if (input.files[0].size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Terlalu Besar',
+                text: 'Ukuran logo maksimal 2MB',
+                confirmButtonColor: '#dc3545'
+            });
+            input.value = '';
+            return;
+        }
+
+        // Validate file type
+        if (!input.files[0].type.match('image.*')) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Format File Salah',
+                text: 'File harus berupa gambar (JPG, PNG, dll)',
+                confirmButtonColor: '#dc3545'
+            });
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('logoPreview').innerHTML = 
+                '<img src="' + e.target.result + '" class="img-thumbnail" style="max-height: 80px;">';
+        }
+        reader.readAsDataURL(input.files[0]);
     }
 }
+
+// Confirm save settings
+function confirmSaveSettings() {
+    const maintenanceMode = document.getElementById('maintenance_mode').checked;
+    
+    // Special warning for maintenance mode
+    if (maintenanceMode) {
+        Swal.fire({
+            title: 'Aktifkan Maintenance Mode?',
+            html: '<p><strong class="text-danger">PERHATIAN!</strong></p><p>Website akan ditutup untuk semua user kecuali admin.</p><p>Yakin ingin mengaktifkan Maintenance Mode?</p>',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Aktifkan!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitSettings();
+            }
+        });
+    } else {
+        Swal.fire({
+            title: 'Simpan Pengaturan?',
+            text: 'Yakin ingin menyimpan semua perubahan pengaturan website?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#0d6efd',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitSettings();
+            }
+        });
+    }
+}
+
+// Submit settings form
+function submitSettings() {
+    Swal.fire({
+        title: 'Menyimpan...',
+        html: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    document.getElementById('settingsForm').submit();
+}
+
+// Clear cache function
+function clearCache() {
+    Swal.fire({
+        title: 'Hapus Cache?',
+        html: '<p>Yakin ingin menghapus semua cache?</p><p class="text-muted mb-0">Cache yang dihapus meliputi: Config, Route, View, dan Application cache</p>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus Cache!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Menghapus Cache...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Send AJAX request to clear cache
+            fetch('{{ route("admin.cache.clear") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Cache berhasil dihapus',
+                        confirmButtonColor: '#0d6efd',
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                } else {
+                    throw new Error(data.message || 'Gagal menghapus cache');
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.message || 'Terjadi kesalahan saat menghapus cache',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+    });
+}
+
+// Warning when changing feature toggles
+document.querySelectorAll('input[type="checkbox"][name^="feature_"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const featureName = this.nextElementSibling.querySelector('strong').textContent;
+        
+        if (!this.checked) {
+            Swal.fire({
+                title: 'Peringatan!',
+                html: `Menonaktifkan <strong>${featureName}</strong> akan mempengaruhi fungsionalitas website.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ffc107',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Lanjutkan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    this.checked = true;
+                }
+            });
+        }
+    });
+});
 </script>
 @endpush
 @endsection

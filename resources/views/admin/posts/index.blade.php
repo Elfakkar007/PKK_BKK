@@ -90,20 +90,26 @@
                                 @if($post->is_published)
                                     <a href="{{ route('information.show', $post->slug) }}" 
                                        target="_blank" 
-                                       class="btn btn-outline-info">
+                                       class="btn btn-outline-info"
+                                       title="Lihat">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                 @endif
                                 <a href="{{ route('admin.posts.edit', $post->id) }}" 
-                                   class="btn btn-outline-primary">
+                                   class="btn btn-outline-primary"
+                                   title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="POST" action="{{ route('admin.posts.destroy', $post->id) }}" class="d-inline">
+                                <form method="POST" 
+                                      action="{{ route('admin.posts.destroy', $post->id) }}" 
+                                      class="d-inline delete-form"
+                                      data-title="Hapus Postingan"
+                                      data-text="Yakin ingin menghapus postingan '{{ Str::limit($post->title, 30) }}'?">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
-                                            class="btn btn-outline-danger"
-                                            onclick="return confirm('Yakin ingin menghapus postingan ini?')">
+                                            class="btn btn-outline-danger delete-btn"
+                                            title="Hapus">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -130,3 +136,37 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete confirmation
+    const deleteForms = document.querySelectorAll('.delete-form');
+    
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.dataset.title || 'Konfirmasi Hapus';
+            const text = this.dataset.text || 'Yakin ingin menghapus data ini?';
+            
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush

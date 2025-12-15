@@ -27,7 +27,10 @@
             <!-- Profile Card -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <form method="POST" action="{{ route('student.profile.update') }}" enctype="multipart/form-data">
+                    <form method="POST" 
+                          action="{{ route('student.profile.update') }}" 
+                          enctype="multipart/form-data"
+                          id="profileForm">
                         @csrf
                         @method('PUT')
 
@@ -191,7 +194,8 @@
                             <input type="file" 
                                    class="form-control @error('cv_path') is-invalid @enderror" 
                                    name="cv_path" 
-                                   accept=".pdf">
+                                   accept=".pdf"
+                                   id="cvFile">
                             <small class="text-muted">Format: PDF, Maksimal 5MB</small>
                             @error('cv_path')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -202,7 +206,7 @@
                             <a href="{{ route('student.dashboard') }}" class="btn btn-outline-secondary">
                                 Batal
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" onclick="confirmSubmitProfile()">
                                 <i class="bi bi-save me-2"></i>Simpan Perubahan
                             </button>
                         </div>
@@ -217,6 +221,18 @@
 <script>
 function previewPhoto(input) {
     if (input.files && input.files[0]) {
+        // Validate file size
+        if (input.files[0].size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Terlalu Besar',
+                text: 'Ukuran foto maksimal 2MB',
+                confirmButtonColor: '#dc3545'
+            });
+            input.value = '';
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById('photoPreview');
@@ -224,6 +240,54 @@ function previewPhoto(input) {
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+// Validate CV file
+document.getElementById('cvFile')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Check file type
+        if (file.type !== 'application/pdf') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Format File Salah',
+                text: 'CV harus dalam format PDF',
+                confirmButtonColor: '#dc3545'
+            });
+            this.value = '';
+            return;
+        }
+
+        // Check file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Terlalu Besar',
+                text: 'Ukuran CV maksimal 5MB',
+                confirmButtonColor: '#dc3545'
+            });
+            this.value = '';
+            return;
+        }
+    }
+});
+
+function confirmSubmitProfile() {
+    Swal.fire({
+        title: 'Simpan Perubahan?',
+        text: 'Yakin ingin menyimpan perubahan profile Anda?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('profileForm').submit();
+        }
+    });
 }
 </script>
 @endpush

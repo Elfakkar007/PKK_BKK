@@ -76,12 +76,14 @@
                                 <i class="bi bi-eye me-2"></i>Review Detail
                             </a>
                             
-                            <form method="POST" action="{{ route('admin.vacancies.approve', $vacancy->id) }}">
+                            <form method="POST" 
+                                  action="{{ route('admin.vacancies.approve', $vacancy->id) }}"
+                                  class="approve-form"
+                                  data-title="Approve Lowongan"
+                                  data-text="Approve lowongan '{{ $vacancy->title }}'?">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" 
-                                        class="btn btn-success w-100"
-                                        onclick="return confirm('Approve lowongan ini?')">
+                                <button type="submit" class="btn btn-success w-100">
                                     <i class="bi bi-check-circle me-2"></i>Approve
                                 </button>
                             </form>
@@ -105,7 +107,10 @@
             <div class="modal fade" id="rejectModal{{ $vacancy->id }}" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form method="POST" action="{{ route('admin.vacancies.reject', $vacancy->id) }}">
+                        <form method="POST" 
+                              action="{{ route('admin.vacancies.reject', $vacancy->id) }}"
+                              class="reject-form"
+                              data-vacancy-title="{{ $vacancy->title }}">
                             @csrf
                             @method('PATCH')
                             <div class="modal-header">
@@ -119,7 +124,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                    <textarea class="form-control" 
+                                    <textarea class="form-control rejection-reason" 
                                               name="rejection_reason" 
                                               rows="3" 
                                               required 
@@ -149,3 +154,79 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle approve confirmation
+    const approveForms = document.querySelectorAll('.approve-form');
+    approveForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.dataset.title || 'Konfirmasi Approve';
+            const text = this.dataset.text || 'Approve lowongan ini?';
+            
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Approve!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+
+    // Handle reject confirmation with validation
+    const rejectForms = document.querySelectorAll('.reject-form');
+    rejectForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const textarea = this.querySelector('.rejection-reason');
+            const vacancyTitle = this.dataset.vacancyTitle;
+            
+            if (!textarea.value.trim()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Alasan Diperlukan',
+                    text: 'Mohon isi alasan penolakan terlebih dahulu',
+                    confirmButtonColor: '#dc3545'
+                });
+                textarea.focus();
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Tolak Lowongan?',
+                html: `Yakin ingin menolak lowongan <strong>"${vacancyTitle}"</strong>?<br><br>Alasan: ${textarea.value}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Tolak!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
+                    if (modal) modal.hide();
+                    
+                    // Submit form
+                    this.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush

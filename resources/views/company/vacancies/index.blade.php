@@ -95,22 +95,26 @@
                         @if($vacancy->isApproved())
                             <a href="{{ route('vacancies.show', $vacancy->id) }}" 
                                class="btn btn-sm btn-outline-primary" 
-                               target="_blank">
-                                <i class="bi bi-eye"></i> Lihat
+                               target="_blank"
+                               title="Lihat">
+                                <i class="bi bi-eye"></i>
                             </a>
                         @endif
                         <a href="{{ route('company.vacancies.edit', $vacancy->id) }}" 
-                           class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-pencil"></i> Edit
+                           class="btn btn-sm btn-outline-secondary"
+                           title="Edit">
+                            <i class="bi bi-pencil"></i>
                         </a>
                         <form method="POST" 
                               action="{{ route('company.vacancies.destroy', $vacancy->id) }}" 
-                              class="d-inline">
+                              class="d-inline delete-form"
+                              data-title="Hapus Lowongan"
+                              data-text="Yakin ingin menghapus lowongan '{{ $vacancy->title }}'?">
                             @csrf
                             @method('DELETE')
                             <button type="submit" 
-                                    class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('Yakin ingin menghapus lowongan ini?')">
+                                    class="btn btn-sm btn-outline-danger delete-btn"
+                                    title="Hapus">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
@@ -139,3 +143,37 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete confirmation
+    const deleteForms = document.querySelectorAll('.delete-form');
+    
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.dataset.title || 'Konfirmasi Hapus';
+            const text = this.dataset.text || 'Yakin ingin menghapus lowongan ini?';
+            
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush

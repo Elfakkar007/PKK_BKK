@@ -84,7 +84,10 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('student.apply.submit', $vacancy->id) }}" enctype="multipart/form-data">
+                    <form method="POST" 
+                          action="{{ route('student.apply.submit', $vacancy->id) }}" 
+                          enctype="multipart/form-data"
+                          id="applicationForm">
                         @csrf
 
                         <div class="alert alert-info">
@@ -212,7 +215,7 @@
                             <a href="{{ route('vacancies.show', $vacancy->id) }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left me-2"></i>Kembali
                             </a>
-                            <button type="submit" class="btn btn-primary flex-fill">
+                            <button type="button" class="btn btn-primary flex-fill" onclick="confirmSubmitApplication()">
                                 <i class="bi bi-send me-2"></i>Kirim Lamaran
                             </button>
                         </div>
@@ -237,6 +240,86 @@ function toggleCvUpload() {
         cvInput.required = true;
         cvInput.disabled = false;
     }
+}
+
+// Validate CV file
+document.getElementById('cv')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Check file type
+        if (file.type !== 'application/pdf') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Format File Salah',
+                text: 'CV harus dalam format PDF',
+                confirmButtonColor: '#dc3545'
+            });
+            this.value = '';
+            return;
+        }
+
+        // Check file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Terlalu Besar',
+                text: 'Ukuran CV maksimal 5MB',
+                confirmButtonColor: '#dc3545'
+            });
+            this.value = '';
+            return;
+        }
+    }
+});
+
+function confirmSubmitApplication() {
+    // Validate required fields
+    const form = document.getElementById('applicationForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    // Check CV
+    const cvInput = document.getElementById('cv');
+    const useExistingCV = document.getElementById('use_existing_cv');
+    
+    if (!useExistingCV?.checked && !cvInput.files.length) {
+        Swal.fire({
+            icon: 'error',
+            title: 'CV Belum Diupload',
+            text: 'Mohon upload CV atau gunakan CV yang sudah tersimpan',
+            confirmButtonColor: '#dc3545'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Kirim Lamaran?',
+        html: '<p>Pastikan semua data sudah benar.</p><p class="text-danger mb-0"><strong>Setelah dikirim, lamaran tidak dapat diubah!</strong></p>',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Kirim Lamaran!',
+        cancelButtonText: 'Cek Lagi',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Mengirim Lamaran...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            form.submit();
+        }
+    });
 }
 </script>
 @endpush

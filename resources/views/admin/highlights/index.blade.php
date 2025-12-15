@@ -62,20 +62,26 @@
                                 @if($highlight->link)
                                     <a href="{{ $highlight->link }}" 
                                        target="_blank" 
-                                       class="btn btn-outline-info">
+                                       class="btn btn-outline-info"
+                                       title="Buka Link">
                                         <i class="bi bi-link-45deg"></i>
                                     </a>
                                 @endif
                                 <a href="{{ route('admin.highlights.edit', $highlight->id) }}" 
-                                   class="btn btn-outline-primary">
+                                   class="btn btn-outline-primary"
+                                   title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="POST" action="{{ route('admin.highlights.destroy', $highlight->id) }}" class="d-inline">
+                                <form method="POST" 
+                                      action="{{ route('admin.highlights.destroy', $highlight->id) }}" 
+                                      class="d-inline delete-form"
+                                      data-title="Hapus Highlight"
+                                      data-text="Yakin ingin menghapus highlight '{{ $highlight->title }}'?">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
-                                            class="btn btn-outline-danger"
-                                            onclick="return confirm('Yakin ingin menghapus highlight ini?')">
+                                            class="btn btn-outline-danger delete-btn"
+                                            title="Hapus">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -102,3 +108,37 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete confirmation
+    const deleteForms = document.querySelectorAll('.delete-form');
+    
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.dataset.title || 'Konfirmasi Hapus';
+            const text = this.dataset.text || 'Yakin ingin menghapus data ini?';
+            
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush

@@ -77,11 +77,13 @@
                         <td class="text-center">
                             <div class="btn-group btn-group-sm">
                                 <a href="{{ route('admin.companies.show', $company->id) }}" 
-                                   class="btn btn-outline-info">
+                                   class="btn btn-outline-info"
+                                   title="Lihat Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.companies.edit', $company->id) }}" 
-                                   class="btn btn-outline-primary">
+                                   class="btn btn-outline-primary"
+                                   title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                             </div>
