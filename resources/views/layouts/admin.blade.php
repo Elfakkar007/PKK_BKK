@@ -102,6 +102,7 @@
             transform: translateY(-5px);
         }
     </style>
+    <script src="https://cdn.tiny.cloud/1/p2yrnsfex3ry06c2qtwem35ntso2hnvij8k49w50yxywl851/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     
     @stack('styles')
 </head>
@@ -168,13 +169,6 @@
                     <a href="{{ route('admin.posts.index') }}" 
                        class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
                         <i class="bi bi-newspaper me-2"></i>Postingan
-                    </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="{{ route('admin.highlights.index') }}" 
-                       class="nav-link {{ request()->routeIs('admin.highlights.*') ? 'active' : '' }}">
-                        <i class="bi bi-star me-2"></i>Highlights
                     </a>
                 </li>
                 

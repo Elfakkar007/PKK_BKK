@@ -91,6 +91,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     
     // Post Management
     Route::resource('posts', PostManagementController::class);
+    Route::post('/posts/upload-image', [PostManagementController::class, 'uploadImage'])
+    ->name('posts.upload-image');
+    Route::post('/admin/posts/upload-image', [PostManagementController::class, 'uploadImage'])
+    ->name('admin.posts.upload-image');
+    Route::post('/admin/posts/upload-image', [PostManagementController::class, 'uploadImage'])
+    ->name('admin.posts.upload-image');
     
     // Company Management
     Route::get('/companies', [CompanyManagementController::class, 'index'])->name('companies.index');
@@ -101,9 +107,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // About Page Management
     Route::get('/about', [AboutManagementController::class, 'edit'])->name('about.edit');
     Route::put('/about', [AboutManagementController::class, 'update'])->name('about.update');
-    
-    // Highlights Management
-    Route::resource('highlights', HighlightManagementController::class);
         // Clear Cache
     Route::post('/cache/clear', [SettingController::class, 'clearCache'])->name('cache.clear');
     // Settings

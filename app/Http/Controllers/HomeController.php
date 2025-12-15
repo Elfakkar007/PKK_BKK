@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Company;
 use App\Models\JobVacancy;
-use App\Models\Highlight;
 use App\Models\AboutContent;
 use Illuminate\Http\Request;
 
@@ -13,9 +12,11 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $highlights = Highlight::where('is_active', true)
-            ->orderBy('order')
-            ->take(6)
+        // Ambil 3 highlight terbaru dari post category highlight
+        $highlights = Post::published()
+            ->highlight()
+            ->latest('published_at')
+            ->take(3)
             ->get();
 
         $latestNews = Post::published()

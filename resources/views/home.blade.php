@@ -24,7 +24,6 @@
                 </div>
             </div>
             <div class="col-lg-6 text-center">
-                <!-- Gunakan CSS placeholder jika gambar tidak ada -->
                 @if(file_exists(public_path('images/hero-illustration.png')))
                     <img src="{{ asset('images/hero-illustration.png') }}" alt="Hero" class="img-fluid" style="max-height: 400px;">
                 @else
@@ -84,38 +83,63 @@
     </div>
 </section>
 
-<!-- Highlights Section -->
+<!-- Highlights Carousel Section -->
 @if($highlights->count() > 0)
-<section class="py-5">
+<section class="py-5 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Program Unggulan BKK</h2>
-            <p class="text-muted">Berbagai program dan kegiatan untuk mendukung karir siswa dan alumni</p>
+        <div class="text-center mb-4 text-white">
+            <h2 class="fw-bold">Sorotan BKK</h2>
+            <p class="mb-0">Prestasi, pengumuman, dan profil alumni sukses</p>
         </div>
         
-        <div class="row g-4">
-            @foreach($highlights as $highlight)
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100">
-                    @if($highlight->image)
-                        <img src="{{ Storage::url($highlight->image) }}" class="card-img-top" alt="{{ $highlight->title }}" style="height: 200px; object-fit: cover;">
-                    @else
-                        <div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                            <i class="bi bi-image display-1"></i>
+        <div id="highlightsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-indicators">
+                @foreach($highlights as $index => $highlight)
+                <button type="button" data-bs-target="#highlightsCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                @endforeach
+            </div>
+            
+            <div class="carousel-inner">
+                @foreach($highlights as $index => $highlight)
+                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+                            @if($highlight->featured_image)
+                                <img src="{{ Storage::url($highlight->featured_image) }}" 
+                                     class="d-block w-100 rounded shadow-lg" 
+                                     alt="{{ $highlight->title }}"
+                                     style="max-height: 400px; object-fit: cover;">
+                            @else
+                                <div class="bg-white rounded shadow-lg d-flex align-items-center justify-content-center" style="height: 400px;">
+                                    <i class="bi bi-star-fill text-warning" style="font-size: 100px;"></i>
+                                </div>
+                            @endif
                         </div>
-                    @endif
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $highlight->title }}</h5>
-                        <p class="card-text">{{ $highlight->description }}</p>
-                        @if($highlight->link)
-                            <a href="{{ $highlight->link }}" class="btn btn-sm btn-outline-primary">
-                                Selengkapnya <i class="bi bi-arrow-right"></i>
+                        <div class="col-lg-6 text-white">
+                            <span class="badge bg-warning text-dark mb-3">
+                                <i class="bi bi-star-fill me-1"></i>SOROTAN
+                            </span>
+                            <h3 class="fw-bold mb-3">{{ $highlight->title }}</h3>
+                            <p class="lead mb-4">{{ $highlight->excerpt }}</p>
+                            <a href="{{ route('information.show', $highlight->slug) }}" class="btn btn-light btn-lg">
+                                Baca Selengkapnya <i class="bi bi-arrow-right ms-2"></i>
                             </a>
-                        @endif
+                        </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
+            
+            @if($highlights->count() > 1)
+            <button class="carousel-control-prev" type="button" data-bs-target="#highlightsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#highlightsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+            @endif
         </div>
     </div>
 </section>
@@ -123,7 +147,7 @@
 
 <!-- Latest Vacancies Section -->
 @if($activeVacancies->count() > 0)
-<section class="py-5 bg-light">
+<section class="py-5">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -186,7 +210,7 @@
 
 <!-- Latest News Section -->
 @if($latestNews->count() > 0)
-<section class="py-5">
+<section class="py-5 bg-light">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -256,4 +280,21 @@
         @endguest
     </div>
 </section>
+
+@push('styles')
+<style>
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 20px;
+}
+
+.carousel-indicators [data-bs-target] {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+</style>
+@endpush
 @endsection
