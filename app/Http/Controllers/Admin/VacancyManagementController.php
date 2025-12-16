@@ -17,6 +17,12 @@ class VacancyManagementController extends Controller
         $type = $request->get('type', 'all');
         $search = $request->get('search');
 
+        // Auto-close expired atau full vacancies
+        $allVacancies = JobVacancy::all();
+        foreach ($allVacancies as $vacancy) {
+            $vacancy->autoCloseLowongan();
+        }
+
         $vacancies = JobVacancy::with('company')
             ->when($status !== 'all', function($q) use ($status) {
                 $q->where('status', $status);

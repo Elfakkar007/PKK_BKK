@@ -2,15 +2,31 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4 mb-4 mb-lg-0">
-                <h5 class="mb-3">BKK SMKN 1 Purwosari</h5>
+                <h5 class="mb-3">{{ settings('site_name', 'BKK SMKN 1 Purwosari') }}</h5>
                 <p class="text-light">
-                    Bursa Kerja Khusus yang menghubungkan siswa dan alumni dengan perusahaan mitra untuk peluang karir terbaik.
+                    {{ settings('site_description', 'Bursa Kerja Khusus yang menghubungkan siswa dan alumni dengan perusahaan mitra untuk peluang karir terbaik.') }}
                 </p>
                 <div class="social-links">
-                    <a href="{{ $app_settings['social_facebook'] ?? '#' }}" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a> 
-                    <a href="{{ $app_settings['social_instagram'] ?? '#' }}" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
-                    <a href="{{ $app_settings['social_twitter'] ?? '#' }}" class="text-white me-3"><i class="bi bi-twitter fs-4"></i></a>
-                    <a href="{{ $app_settings['social_youtube'] ?? '#' }}" class="text-white"><i class="bi bi-youtube fs-4"></i></a>
+                    @if(settings('social_facebook'))
+                        <a href="{{ settings('social_facebook') }}" target="_blank" class="text-white me-3">
+                            <i class="bi bi-facebook fs-4"></i>
+                        </a>
+                    @endif
+                    @if(settings('social_instagram'))
+                        <a href="{{ settings('social_instagram') }}" target="_blank" class="text-white me-3">
+                            <i class="bi bi-instagram fs-4"></i>
+                        </a>
+                    @endif
+                    @if(settings('social_twitter'))
+                        <a href="{{ settings('social_twitter') }}" target="_blank" class="text-white me-3">
+                            <i class="bi bi-twitter fs-4"></i>
+                        </a>
+                    @endif
+                    @if(settings('social_youtube'))
+                        <a href="{{ settings('social_youtube') }}" target="_blank" class="text-white">
+                            <i class="bi bi-youtube fs-4"></i>
+                        </a>
+                    @endif
                 </div>
             </div>
             
@@ -28,18 +44,24 @@
             <div class="col-lg-3 col-md-4 mb-4 mb-lg-0">
                 <h5 class="mb-3">Kontak</h5>
                 <ul class="list-unstyled text-light">
-                    <li class="mb-2">
-                        <i class="bi bi-geo-alt-fill me-2"></i>
-                        Jl. Raya Purwosari, Polerejo, Purwosari, Kec. Purwosari, Pasuruan, Jawa Timur 67162
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-telephone-fill me-2"></i>
-                        (0343) 613747
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-envelope-fill me-2"></i>
-                        bkk@smkn1purwosari.sch.id
-                    </li>
+                    @if(settings('contact_address'))
+                        <li class="mb-2">
+                            <i class="bi bi-geo-alt-fill me-2"></i>
+                            {{ settings('contact_address') }}
+                        </li>
+                    @endif
+                    @if(settings('contact_phone'))
+                        <li class="mb-2">
+                            <i class="bi bi-telephone-fill me-2"></i>
+                            {{ settings('contact_phone') }}
+                        </li>
+                    @endif
+                    @if(settings('contact_email'))
+                        <li class="mb-2">
+                            <i class="bi bi-envelope-fill me-2"></i>
+                            {{ settings('contact_email') }}
+                        </li>
+                    @endif
                 </ul>
             </div>
             
@@ -57,12 +79,12 @@
         <div class="row">
             <div class="col-md-6 text-center text-md-start">
                 <p class="mb-0 text-light">
-                    &copy; {{ date('Y') }} BKK SMKN 1 Purwosari. All rights reserved.
+                    &copy; {{ date('Y') }} {{ settings('site_name', 'BKK SMKN 1 Purwosari') }}. All rights reserved.
                 </p>
             </div>
             <div class="col-md-6 text-center text-md-end">
                 <p class="mb-0 text-light">
-                    Developed by Tim IT SMKN 1 Purwosari
+                    Developed by Alfakkar
                 </p>
             </div>
         </div>

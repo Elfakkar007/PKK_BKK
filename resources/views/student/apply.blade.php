@@ -187,7 +187,7 @@
                                     </a>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="use_existing_cv" onchange="toggleCvUpload()">
+                                    <input class="form-check-input" type="checkbox" id="use_existing_cv" name="use_existing_cv" onchange="toggleCvUpload()">
                                     <label class="form-check-label" for="use_existing_cv">
                                         Gunakan CV yang sudah tersimpan
                                     </label>
@@ -232,7 +232,7 @@ function toggleCvUpload() {
     const checkbox = document.getElementById('use_existing_cv');
     const cvInput = document.getElementById('cv');
     
-    if (checkbox.checked) {
+    if (checkbox && checkbox.checked) {
         cvInput.required = false;
         cvInput.disabled = true;
         cvInput.value = '';
@@ -284,11 +284,15 @@ function confirmSubmitApplication() {
     const cvInput = document.getElementById('cv');
     const useExistingCV = document.getElementById('use_existing_cv');
     
-    if (!useExistingCV?.checked && !cvInput.files.length) {
+    // Validasi: CV harus ada, baik dari upload atau dari CV yang tersimpan
+    const hasNewCv = cvInput.files && cvInput.files.length > 0;
+    const useExistingCv = useExistingCV?.checked || false;
+    
+    if (!hasNewCv && !useExistingCv) {
         Swal.fire({
             icon: 'error',
-            title: 'CV Belum Diupload',
-            text: 'Mohon upload CV atau gunakan CV yang sudah tersimpan',
+            title: 'CV Belum Dipilih',
+            text: 'Mohon upload CV baru atau gunakan CV yang sudah tersimpan',
             confirmButtonColor: '#dc3545'
         });
         return;

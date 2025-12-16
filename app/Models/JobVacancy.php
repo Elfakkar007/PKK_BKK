@@ -71,6 +71,11 @@ class JobVacancy extends Model
         return $query->where('status', 'pending');
     }
 
+    public function scopeClosed($query)
+    {
+        return $query->where('status', 'closed');
+    }
+
     // Helper methods
     public function isExpired()
     {
@@ -96,5 +101,27 @@ class JobVacancy extends Model
     public function isFull()
     {
         return $this->remainingQuota() <= 0;
+    }
+
+    public function isClosed()
+    {
+        return $this->status === 'closed';
+    }
+
+    public function markAsClosed()
+    {
+        $this->update(['status' => 'closed', 'is_active' => false]);
+    }
+
+    public function shouldBeClosed()
+    {
+        return ($this->isExpired() || $this->isFull()) && $this->status !== 'closed';
+    }
+
+    public function autoCloseLowongan()
+    {
+        if ($this->shouldBeClosed()) {
+            $this->markAsClosed();
+        }
     }
 }

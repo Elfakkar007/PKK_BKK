@@ -10,7 +10,7 @@
     </div>
 
     <!-- Filter Tabs -->
-    <ul class="nav nav-tabs mb-4">
+    <ul class="nav nav-tabs mb-4 flex-wrap">
         <li class="nav-item">
             <a class="nav-link {{ $status == 'all' ? 'active' : '' }}" 
                href="{{ route('company.applications') }}">
@@ -27,6 +27,18 @@
             <a class="nav-link {{ $status == 'reviewed' ? 'active' : '' }}" 
                href="{{ route('company.applications', ['status' => 'reviewed']) }}">
                 Ditinjau
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ $status == 'interview' ? 'active' : '' }}" 
+               href="{{ route('company.applications', ['status' => 'interview']) }}">
+                Wawancara
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ $status == 'technical_test' ? 'active' : '' }}" 
+               href="{{ route('company.applications', ['status' => 'technical_test']) }}">
+                Tes Teknis
             </a>
         </li>
         <li class="nav-item">

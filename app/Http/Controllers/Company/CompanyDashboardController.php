@@ -79,15 +79,26 @@ class CompanyDashboardController extends Controller
     }
 
     // Vacancy Management
-    public function vacancies()
+    public function vacancies(Request $request)
     {
         $company = Auth::user()->company;
+        $status = $request->get('status', 'all');
+
+        // Auto-close expired atau full vacancies
+        $allVacancies = JobVacancy::where('company_id', $company->id)->get();
+        foreach ($allVacancies as $vacancy) {
+            $vacancy->autoCloseLowongan();
+        }
+
         $vacancies = JobVacancy::where('company_id', $company->id)
+            ->when($status !== 'all', function($q) use ($status) {
+                $q->where('status', $status);
+            })
             ->withCount('applications')
             ->latest()
             ->paginate(10);
 
-        return view('company.vacancies.index', compact('vacancies'));
+        return view('company.vacancies.index', compact('vacancies', 'status'));
     }
 
     public function vacancyCreate()
@@ -193,6 +204,14 @@ class CompanyDashboardController extends Controller
             ->with(['jobVacancy', 'student.user'])
             ->findOrFail($id);
 
+        // Auto-change status to "reviewed" jika masih pending
+        if ($application->status === 'pending') {
+            $application->update([
+                'status' => 'reviewed',
+                'reviewed_at' => now(),
+            ]);
+        }
+
         return view('company.applications.show', compact('application'));
     }
 
@@ -206,7 +225,7 @@ class CompanyDashboardController extends Controller
             ->findOrFail($id);
 
         $validated = $request->validate([
-            'status' => ['required', 'in:pending,reviewed,accepted,rejected'],
+            'status' => ['required', 'in:interview,technical_test,accepted,rejected'],
             'company_notes' => ['nullable', 'string'],
         ]);
 

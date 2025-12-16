@@ -143,37 +143,36 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="POST" 
-                  action="{{ route('admin.vacancies.reject', $vacancy->id) }}"
-                  class="reject-form"
-                  data-vacancy-title="{{ $vacancy->title }}">
-                @csrf
-                @method('PATCH')
-                <div class="modal-header">
-                    <h5 class="modal-title">Tolak Lowongan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        Menolak lowongan: <strong>{{ $vacancy->title }}</strong>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                        <textarea class="form-control rejection-reason" 
-                                  name="rejection_reason" 
-                                  rows="3" 
-                                  required 
-                                  placeholder="Jelaskan alasan penolakan lowongan ini..."></textarea>
-                        <small class="text-muted">Alasan ini akan dilihat oleh perusahaan</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-x-circle me-2"></i>Tolak Lowongan
-                    </button>
-                </div>
-            </form>
+      action="{{ route('admin.vacancies.reject', $vacancy->id) }}">
+    @csrf
+    @method('PATCH')
+    <div class="modal-header">
+        <h5 class="modal-title">Tolak Lowongan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Menolak lowongan: <strong>{{ $vacancy->title }}</strong>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+            <textarea class="form-control" 
+                      name="rejection_reason" 
+                      rows="3" 
+                      required 
+                      minlength="10"
+                      placeholder="Jelaskan alasan penolakan..."></textarea>
+            <div class="invalid-feedback">
+                Alasan penolakan minimal 10 karakter
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-danger">Tolak Lowongan</button>
+    </div>
+</form>
         </div>
     </div>
 </div>
@@ -202,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Show loading
                     Swal.fire({
                         title: 'Memproses...',
                         html: 'Mohon tunggu sebentar',
@@ -219,84 +217,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Handle reject confirmation with validation
-    const rejectForm = document.querySelector('.reject-form');
-    if (rejectForm) {
-        rejectForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const textarea = this.querySelector('.rejection-reason');
-            const vacancyTitle = this.dataset.vacancyTitle;
-            
-            // Validate rejection reason
-            if (!textarea.value.trim()) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Alasan Diperlukan',
-                    text: 'Mohon isi alasan penolakan terlebih dahulu',
-                    confirmButtonColor: '#dc3545'
-                });
-                textarea.focus();
-                return;
-            }
-
-            // Check minimum length
+    // Handle reject form validation (tanpa SweetAlert)
+    const rejectModal = document.getElementById('rejectModal');
+    if (rejectModal) {
+        const form = rejectModal.querySelector('form');
+        const textarea = form.querySelector('textarea[name="rejection_reason"]');
+        
+        form.addEventListener('submit', function(e) {
+            // Validasi minimal length
             if (textarea.value.trim().length < 10) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Alasan Terlalu Singkat',
-                    text: 'Alasan penolakan minimal 10 karakter',
-                    confirmButtonColor: '#dc3545'
-                });
+                e.preventDefault();
+                textarea.classList.add('is-invalid');
                 textarea.focus();
-                return;
+                return false;
             }
-            
-            Swal.fire({
-                title: 'Tolak Lowongan?',
-                html: `<p>Yakin ingin menolak lowongan <strong>"${vacancyTitle}"</strong>?</p>
-                       <div class="text-start mt-3 mb-2">
-                           <strong>Alasan:</strong>
-                           <div class="alert alert-warning mt-2 mb-0">${textarea.value}</div>
-                       </div>
-                       <p class="text-muted small mb-0">Perusahaan akan menerima notifikasi penolakan</p>`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Tolak!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true,
-                width: '600px'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Close modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('rejectModal'));
-                    if (modal) modal.hide();
-                    
-                    // Show loading
-                    Swal.fire({
-                        title: 'Memproses...',
-                        html: 'Mohon tunggu sebentar',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-                    
-                    // Submit form
-                    this.submit();
-                }
-            });
+        });
+        
+        // Remove invalid class when typing
+        textarea.addEventListener('input', function() {
+            if (this.value.trim().length >= 10) {
+                this.classList.remove('is-invalid');
+            }
         });
     }
-});
-
-// Auto-resize textarea
-document.querySelector('.rejection-reason')?.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = (this.scrollHeight) + 'px';
 });
 </script>
 @endpush

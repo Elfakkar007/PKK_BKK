@@ -93,28 +93,39 @@
                         </div>
                     </div>
 
-                    <!-- Apply Button -->
+                   <!-- Apply Button -->
                     @auth
                         @if(Auth::user()->isStudent())
-                            @if($vacancy->isFull())
+                            
+                            @if(settings('feature_apply_job', '1') !== '1')
+                                <button class="btn btn-secondary w-100 py-3" disabled>
+                                    <i class="bi bi-slash-circle me-2"></i>Fitur Lamaran Tidak Tersedia
+                                </button>
+
+                            @elseif($vacancy->isFull())
                                 <button class="btn btn-secondary w-100 py-3" disabled>
                                     <i class="bi bi-x-circle me-2"></i>Kuota Penuh
                                 </button>
+
                             @elseif($vacancy->isExpired())
                                 <button class="btn btn-secondary w-100 py-3" disabled>
                                     <i class="bi bi-x-circle me-2"></i>Lowongan Telah Ditutup
                                 </button>
+
                             @else
-                                <a href="{{ route('student.apply.form', $vacancy->id) }}" class="btn btn-primary w-100 py-3">
+                                <a href="{{ route('student.apply.form', $vacancy->id) }}"
+                                class="btn btn-primary w-100 py-3">
                                     <i class="bi bi-send me-2"></i>Lamar Sekarang
                                 </a>
                             @endif
+
                         @endif
                     @else
                         <a href="{{ route('login') }}" class="btn btn-primary w-100 py-3">
                             <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk Melamar
                         </a>
                     @endauth
+
                 </div>
             </div>
 

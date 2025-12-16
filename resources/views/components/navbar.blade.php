@@ -1,9 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-            <img src="{{ Storage::url($app_settings['site_logo'] ?? 'default.png') }}" alt="Logo BKK" onerror="this.style.display='none'">
-            <span>BKK SMKN 1 Purwosari</span>
-        </a>
+        @if(settings('site_logo'))
+            <img src="{{ Storage::url(settings('site_logo')) }}" 
+                alt="{{ settings('site_name', 'BKK') }}" 
+                style="height: 40px; margin-right: 10px;">
+        @endif
+        <span>{{ settings('site_name') }}</span>
+    </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>

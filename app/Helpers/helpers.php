@@ -26,6 +26,8 @@ if (!function_exists('get_status_label')) {
             'approved' => 'Disetujui',
             'rejected' => 'Ditolak',
             'reviewed' => 'Ditinjau',
+            'interview' => 'Wawancara',
+            'technical_test' => 'Tes Teknis',
             'accepted' => 'Diterima',
             'closed' => 'Ditutup',
             default => ucfirst($status)
@@ -44,6 +46,8 @@ if (!function_exists('get_status_badge_class')) {
             'approved', 'accepted' => 'bg-success',
             'rejected' => 'bg-danger',
             'reviewed' => 'bg-info',
+            'interview' => 'bg-primary',
+            'technical_test' => 'bg-secondary',
             'closed' => 'bg-secondary',
             default => 'bg-secondary'
         };

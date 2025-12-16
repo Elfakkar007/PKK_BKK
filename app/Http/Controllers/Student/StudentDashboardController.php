@@ -110,17 +110,37 @@ class StudentDashboardController extends Controller
                 ->with('error', 'Anda sudah melamar lowongan ini.');
         }
 
-        $validated = $request->validate([
+        // Tentukan apakah menggunakan CV lama atau baru
+        $useExistingCv = $request->has('use_existing_cv');
+
+        // Validation rules yang conditional
+        $rules = [
             'full_name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string'],
             'birth_date' => ['required', 'date'],
             'birth_place' => ['required', 'string'],
             'email' => ['required', 'email'],
             'phone' => ['required', 'string'],
-            'cv' => ['required', 'mimes:pdf', 'max:5120'],
-        ]);
+        ];
 
-        $cvPath = $request->file('cv')->store('application-cvs', 'public');
+        // CV hanya required jika tidak menggunakan CV yang sudah tersimpan
+        if (!$useExistingCv) {
+            $rules['cv'] = ['required', 'mimes:pdf', 'max:5120'];
+        }
+
+        $validated = $request->validate($rules);
+
+        // Tentukan CV path
+        if ($useExistingCv) {
+            // Gunakan CV yang sudah tersimpan
+            if (!$student->cv_path) {
+                return back()->withErrors(['cv' => 'CV tidak ditemukan. Silakan upload CV baru.']);
+            }
+            $cvPath = $student->cv_path;
+        } else {
+            // Upload CV baru
+            $cvPath = $request->file('cv')->store('application-cvs', 'public');
+        }
 
         $application = Application::create([
             'job_vacancy_id' => $vacancyId,

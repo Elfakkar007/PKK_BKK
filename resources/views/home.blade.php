@@ -8,9 +8,9 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
-                <h1 class="display-4 fw-bold mb-4">Bursa Kerja Khusus<br>SMKN 1 Purwosari</h1>
+                 <h1 class="display-4 fw-bold mb-4">{{ settings('site_name', 'Bursa Kerja Khusus SMKN 1 Purwosari') }}</h1>
                 <p class="lead mb-4">
-                    Membantu siswa dan alumni menemukan peluang karir terbaik melalui jaringan perusahaan mitra yang terpercaya.
+                    {{ settings('site_tagline', 'Membantu siswa dan alumni menemukan peluang karir terbaik melalui jaringan perusahaan mitra yang terpercaya.') }}
                 </p>
                 <div class="d-flex gap-3 flex-wrap">
                     <a href="{{ route('vacancies') }}" class="btn btn-light btn-lg">

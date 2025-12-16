@@ -61,6 +61,16 @@ class Application extends Model
         return $query->where('status', 'rejected');
     }
 
+    public function scopeInterview($query)
+    {
+        return $query->where('status', 'interview');
+    }
+
+    public function scopeTechnicalTest($query)
+    {
+        return $query->where('status', 'technical_test');
+    }
+
     // Helper methods
     public function isPending()
     {
@@ -82,11 +92,23 @@ class Application extends Model
         return $this->status === 'rejected';
     }
 
+    public function isInterview()
+    {
+        return $this->status === 'interview';
+    }
+
+    public function isTechnicalTest()
+    {
+        return $this->status === 'technical_test';
+    }
+
     public function getStatusBadgeAttribute()
     {
         return match($this->status) {
             'pending' => 'warning',
             'reviewed' => 'info',
+            'interview' => 'primary',
+            'technical_test' => 'secondary',
             'accepted' => 'success',
             'rejected' => 'danger',
             default => 'secondary'
@@ -98,6 +120,8 @@ class Application extends Model
         return match($this->status) {
             'pending' => 'Menunggu',
             'reviewed' => 'Sedang Ditinjau',
+            'interview' => 'Wawancara',
+            'technical_test' => 'Tes Teknis',
             'accepted' => 'Diterima',
             'rejected' => 'Ditolak',
             default => 'Unknown'

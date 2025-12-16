@@ -10,6 +10,14 @@
                 <i class="bi bi-arrow-left me-2"></i>Kembali
             </a>
 
+            @if($application->status === 'reviewed')
+                <div class="alert alert-info mb-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Status Otomatis Diubah</strong><br>
+                    <small>Status lamaran otomatis berubah menjadi "Sedang Ditinjau" setelah Anda membuka detail lamaran ini.</small>
+                </div>
+            @endif
+
             <!-- Candidate Profile -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
@@ -113,17 +121,34 @@
                         @method('PATCH')
 
                         <div class="mb-3">
-                            <label class="form-label">Status <span class="text-danger">*</span></label>
-                            <select class="form-select @error('status') is-invalid @enderror" 
-                                    name="status" 
-                                    required>
-                                <option value="pending" {{ $application->status == 'pending' ? 'selected' : '' }}>Menunggu</option>
-                                <option value="reviewed" {{ $application->status == 'reviewed' ? 'selected' : '' }}>Sedang Ditinjau</option>
-                                <option value="accepted" {{ $application->status == 'accepted' ? 'selected' : '' }}>Diterima</option>
-                                <option value="rejected" {{ $application->status == 'rejected' ? 'selected' : '' }}>Ditolak</option>
-                            </select>
+                            <label class="form-label">Keputusan <span class="text-danger">*</span></label>
+                            <div class="btn-group w-100 flex-wrap" role="group">
+                                <input type="radio" class="btn-check" name="status" id="status_interview" value="interview" 
+                                       {{ $application->status == 'interview' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-primary" for="status_interview">
+                                    <i class="bi bi-chat-left-text me-2"></i>Wawancara
+                                </label>
+
+                                <input type="radio" class="btn-check" name="status" id="status_technical_test" value="technical_test" 
+                                       {{ $application->status == 'technical_test' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-secondary" for="status_technical_test">
+                                    <i class="bi bi-pencil-square me-2"></i>Tes Teknis
+                                </label>
+
+                                <input type="radio" class="btn-check" name="status" id="status_accepted" value="accepted" 
+                                       {{ $application->status == 'accepted' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-success" for="status_accepted">
+                                    <i class="bi bi-check-circle me-2"></i>Diterima
+                                </label>
+
+                                <input type="radio" class="btn-check" name="status" id="status_rejected" value="rejected" 
+                                       {{ $application->status == 'rejected' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-danger" for="status_rejected">
+                                    <i class="bi bi-x-circle me-2"></i>Ditolak
+                                </label>
+                            </div>
                             @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 

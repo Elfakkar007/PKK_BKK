@@ -24,7 +24,7 @@
                             </ul>
                         </div>
                     @endif
-
+                    @if(settings('feature_registration', '1') === '1')
                     <form method="POST" action="{{ route('register.student') }}">
                         @csrf
 
@@ -187,6 +187,12 @@
                             </p>
                         </div>
                     </form>
+                    @else
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Registrasi sementara ditutup. Silakan hubungi admin untuk informasi lebih lanjut.
+                    </div>
+                @endif
                 </div>
             </div>
         </div>

@@ -24,6 +24,7 @@
                     <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="approved" {{ $status == 'approved' ? 'selected' : '' }}>Approved</option>
                     <option value="rejected" {{ $status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    <option value="closed" {{ $status == 'closed' ? 'selected' : '' }}>Closed</option>
                 </select>
             </div>
             <div class="col-md-3">

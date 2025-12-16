@@ -8,9 +8,9 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h1 class="display-5 fw-bold mb-3">Tentang BKK SMKN 1 Purwosari</h1>
-                <p class="lead mb-0">
-                    Membangun jembatan antara pendidikan dan dunia kerja untuk masa depan yang lebih cerah
+                <h1 class="display-4 fw-bold mb-4">{{ settings('site_name', 'Bursa Kerja Khusus SMKN 1 Purwosari') }}</h1>
+                <p class="lead mb-4">
+                    {{ settings('site_tagline', 'Membantu siswa dan alumni menemukan peluang karir terbaik melalui jaringan perusahaan mitra yang terpercaya.') }}
                 </p>
             </div>
         </div>
@@ -163,47 +163,49 @@
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <h2 class="fw-bold mb-4">Hubungi Kami</h2>
                 <div class="mb-4">
+                     @if(settings('contact_address'))
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-primary text-white rounded p-3 me-3">
-                            <i class="bi bi-geo-alt fs-4"></i>
+                            <i class="bi bi-geo-alt fs-5"></i>
                         </div>
                         <div>
                             <h6 class="fw-bold mb-1">Alamat</h6>
-                            <p class="text-muted mb-0">
-                                SMKN 1 Purwosari<br>
-                                Jl. Raya Purwosari, Pasuruan<br>
-                                Jawa Timur, Indonesia
-                            </p>
+                            <strong>{{ settings('contact_address') }}</strong>
                         </div>
                     </div>
+                    @endif
                     
+                    @if(settings('contact_phone'))
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-success text-white rounded p-3 me-3">
-                            <i class="bi bi-telephone fs-4"></i>
+                            <i class="bi bi-telephone fs-5"></i>
                         </div>
                         <div>
                             <h6 class="fw-bold mb-1">Telepon</h6>
-                            <p class="text-muted mb-0">(0343) 123456</p>
+                            <strong>{{ settings('contact_phone') }}</strong>
                         </div>
                     </div>
+                    @endif
                     
+                    @if(settings('contact_email'))
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-info text-white rounded p-3 me-3">
-                            <i class="bi bi-envelope fs-4"></i>
+                            <i class="bi bi-envelope fs-5"></i>
                         </div>
                         <div>
                             <h6 class="fw-bold mb-1">Email</h6>
-                            <p class="text-muted mb-0">bkk@smkn1purwosari.sch.id</p>
+                            <strong>{{ settings('contact_email') }}</strong>
                         </div>
                     </div>
+                    @endif
                     
                     <div class="d-flex align-items-start">
                         <div class="bg-warning text-white rounded p-3 me-3">
-                            <i class="bi bi-clock fs-4"></i>
+                            <i class="bi bi-clock fs-5"></i>
                         </div>
                         <div>
                             <h6 class="fw-bold mb-1">Jam Operasional</h6>
-                            <p class="text-muted mb-0">
+                            <p class="mb-0">
                                 Senin - Jumat: 07:00 - 15:00 WIB<br>
                                 Sabtu: 07:00 - 12:00 WIB
                             </p>

@@ -40,6 +40,12 @@
                 Ditolak
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request('status') == 'closed' ? 'active' : '' }}" 
+               href="{{ route('company.vacancies', ['status' => 'closed']) }}">
+                Tertutup
+            </a>
+        </li>
     </ul>
 
     @if($vacancies->count() > 0)
@@ -129,7 +135,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $vacancies->links() }}
+        {{ $vacancies->appends(request()->query())->links() }}
     </div>
     @else
     <div class="text-center py-5">
