@@ -103,7 +103,7 @@
                                 <h6><i class="bi bi-star me-2"></i>Format Sorotan</h6>
                                 <ul>
                                     <li><strong>Judul:</strong> Singkat & padat (prestasi/pengumuman)</li>
-                                    <li><strong>Featured Image:</strong> Gambar poster/portrait berkualitas tinggi</li>
+                                    <li><strong>Featured Image:</strong> Gambar landscape berkualitas tinggi (rasio 16:9 atau 4:3)</li>
                                     <li><strong>Excerpt:</strong> <span class="text-danger">WAJIB!</span> Hook/kalimat penarik perhatian</li>
                                     <li><strong>Konten:</strong> Boleh kosong atau minimal (hanya link pendaftaran)</li>
                                     <li>3 terbaru tampil di beranda dengan carousel otomatis</li>
@@ -197,6 +197,8 @@
             tinymce.get('contentField').remove();
         }
 
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         tinymce.init({
             selector: '#contentField',
             height: 500,
@@ -206,23 +208,20 @@
             plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
             toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image media link | code',
             
-            // --- BAGIAN INI SUDAH DIPERBAIKI UNTUK MENGHILANGKAN ERROR "reading 'then'" ---
-            images_upload_handler: (blobInfo, progress) => {
-                return new Promise((resolve, reject) => {
+            images_upload_handler: function(blobInfo, progress) {
+                return new Promise(function(resolve, reject) {
                     const xhr = new XMLHttpRequest();
                     xhr.withCredentials = false;
                     xhr.open('POST', '{{ route("admin.posts.upload-image") }}');
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
 
-                    // Tambahkan header CSRF Token (Penting untuk Laravel)
-                    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-
-                    xhr.upload.onprogress = (e) => {
+                    xhr.upload.onprogress = function(e) {
                         if (e.lengthComputable) {
                             progress(e.loaded / e.total * 100);
                         }
                     };
 
-                    xhr.onload = () => {
+                    xhr.onload = function() {
                         if (xhr.status === 403) {
                             reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
                             return;
@@ -233,31 +232,28 @@
                             return;
                         }
 
-                        const json = JSON.parse(xhr.responseText);
-
-                        if (!json || typeof json.location != 'string') {
-                            reject('Invalid JSON: ' + xhr.responseText);
-                            return;
+                        try {
+                            const json = JSON.parse(xhr.responseText);
+                            if (!json || typeof json.location !== 'string') {
+                                reject('Invalid JSON: ' + xhr.responseText);
+                                return;
+                            }
+                            resolve(json.location);
+                        } catch (e) {
+                            reject('Invalid JSON response');
                         }
-
-                        // Gunakan resolve, bukan success
-                        resolve(json.location);
                     };
 
-                    xhr.onerror = () => {
-                        // Gunakan reject, bukan failure
+                    xhr.onerror = function() {
                         reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
                     };
 
                     const formData = new FormData();
                     formData.append('file', blobInfo.blob(), blobInfo.filename());
-                    // Token sudah dikirim via header, tapi kalau controller Anda cek body, biarkan ini:
-                    formData.append('_token', '{{ csrf_token() }}');
 
                     xhr.send(formData);
                 });
             },
-            // --- AKHIR PERBAIKAN ---
 
             automatic_uploads: true,
             file_picker_types: 'image',
@@ -282,8 +278,7 @@
         initTinyMCE();
     }
 
-    // Script Logic UI Kategori (Tidak diubah, tetap sama)
-    @if(request()->routeIs('admin.posts.create'))
+    // Category UI Logic
     document.addEventListener('DOMContentLoaded', function() {
         const categorySelect = document.getElementById('categorySelect');
         const excerptField = document.getElementById('excerptField');
@@ -298,7 +293,10 @@
         };
 
         function updateFormByCategory(category) {
-            Object.values(helpPanels).forEach(panel => panel.classList.remove('active'));
+            Object.values(helpPanels).forEach(panel => {
+                if (panel) panel.classList.remove('active');
+            });
+            
             if (helpPanels[category]) {
                 helpPanels[category].classList.add('active');
             }
@@ -317,7 +315,7 @@
                 case 'highlight':
                     excerptField.placeholder = 'Hook menarik perhatian!';
                     excerptHelp.innerHTML = '<span class="text-danger"><strong>Wajib diisi!</strong></span>';
-                    contentHelp.textContent = 'Konten boleh minimal.';
+                    contentHelp.textContent = 'Konten boleh minimal. Gambar harus landscape (16:9 atau 4:3).';
                     break;
                 default:
                     excerptField.placeholder = 'Ringkasan singkat...';
@@ -336,7 +334,6 @@
             }
         }
     });
-    @endif
 })();
 </script>
 @endpush
