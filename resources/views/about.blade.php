@@ -217,23 +217,81 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4">Kirim Pesan</h5>
-                        <form>
+                        
+                        @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        @endif
+
+                        @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Terjadi kesalahan:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('contact.store') }}">
+                            @csrf
                             <div class="mb-3">
-                                <label class="form-label">Nama</label>
-                                <input type="text" class="form-control" required>
+                                <label class="form-label">Nama <span class="text-danger">*</span></label>
+                                <input type="text" 
+                                       name="name" 
+                                       class="form-control @error('name') is-invalid @enderror" 
+                                       value="{{ old('name') }}"
+                                       placeholder="Nama lengkap Anda"
+                                       required>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" required>
+                                <label class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" 
+                                       name="email" 
+                                       class="form-control @error('email') is-invalid @enderror" 
+                                       value="{{ old('email') }}"
+                                       placeholder="email@example.com"
+                                       required>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">Subjek</label>
-                                <input type="text" class="form-control" required>
+                                <label class="form-label">Subjek <span class="text-danger">*</span></label>
+                                <input type="text" 
+                                       name="subject" 
+                                       class="form-control @error('subject') is-invalid @enderror" 
+                                       value="{{ old('subject') }}"
+                                       placeholder="Judul pesan Anda"
+                                       required>
+                                @error('subject')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">Pesan</label>
-                                <textarea class="form-control" rows="4" required></textarea>
+                                <label class="form-label">Pesan <span class="text-danger">*</span></label>
+                                <textarea name="message" 
+                                          class="form-control @error('message') is-invalid @enderror" 
+                                          rows="4" 
+                                          placeholder="Tuliskan pesan Anda di sini..."
+                                          required>{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Maksimal 2000 karakter</small>
                             </div>
+
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="bi bi-send me-2"></i>Kirim Pesan
                             </button>

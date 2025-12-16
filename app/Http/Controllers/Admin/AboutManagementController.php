@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AboutManagementController extends Controller
 {
-   
-
     public function edit()
     {
         $about = AboutContent::first() ?? new AboutContent();
@@ -23,6 +21,11 @@ class AboutManagementController extends Controller
             'mission' => ['nullable', 'string'],
             'work_programs' => ['nullable', 'array'],
             'organization_chart' => ['nullable', 'image', 'max:5120'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
+        ], [
+            'contact_email.email' => 'Format email tidak valid.',
+            'organization_chart.image' => 'File harus berupa gambar.',
+            'organization_chart.max' => 'Ukuran gambar maksimal 5MB.',
         ]);
 
         $about = AboutContent::first() ?? new AboutContent();

@@ -77,10 +77,32 @@
                                class="form-control @error('organization_chart') is-invalid @enderror" 
                                name="organization_chart" 
                                accept="image/*">
-                        <small class="text-muted">Upload gambar struktur organisasi (JPG, PNG). Maksimal 2MB</small>
+                        <small class="text-muted">Upload gambar struktur organisasi (JPG, PNG). Maksimal 5MB</small>
                         @error('organization_chart')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    <!-- Email Kontak -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-envelope me-2"></i>Email Tujuan Form Kontak
+                        </h5>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Email ini akan menerima pesan dari pengunjung yang mengisi form kontak di halaman Tentang BKK
+                        </div>
+                        <input type="email" 
+                               class="form-control @error('contact_email') is-invalid @enderror" 
+                               name="contact_email" 
+                               value="{{ old('contact_email', $about->contact_email ?? '') }}"
+                               placeholder="contoh: admin@smkn1purwosari.sch.id">
+                        @error('contact_email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">
+                            Pastikan email ini aktif dan dapat menerima email dari sistem
+                        </small>
                     </div>
 
                     <hr class="my-4">

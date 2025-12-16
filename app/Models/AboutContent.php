@@ -16,6 +16,7 @@ class AboutContent extends Model
         'mission',
         'work_programs',
         'organization_chart',
+        'contact_email'
     ];
 
     protected $casts = [
@@ -23,22 +24,22 @@ class AboutContent extends Model
     ];
 
     // Helper methods
-    public function hasVision()
+    public function hasVision(): bool
     {
         return !empty($this->vision);
     }
 
-    public function hasMission()
+    public function hasMission(): bool
     {
         return !empty($this->mission);
     }
 
-    public function hasWorkPrograms()
+    public function hasWorkPrograms(): bool
     {
         return !empty($this->work_programs);
     }
 
-    public function hasOrganizationChart()
+    public function hasOrganizationChart(): bool
     {
         return !empty($this->organization_chart);
     }

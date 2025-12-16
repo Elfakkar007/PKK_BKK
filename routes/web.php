@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AboutManagementController;
 use App\Http\Controllers\Admin\HighlightManagementController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MajorManagementController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -24,7 +25,7 @@ Route::get('/perusahaan/{id}', [HomeController::class, 'companyShow'])->name('co
 Route::get('/lowongan', [HomeController::class, 'vacancies'])->name('vacancies');
 Route::get('/lowongan/{id}', [HomeController::class, 'vacancyShow'])->name('vacancies.show');
 Route::get('/tentang', [HomeController::class, 'about'])->name('about');
-
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Auth Routes
 Route::middleware('guest')->group(function () {
@@ -112,8 +113,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     });
     
     // About Page Management
-    Route::get('/about', [AboutManagementController::class, 'edit'])->name('about.edit');
-    Route::put('/about', [AboutManagementController::class, 'update'])->name('about.update');
+    Route::get('/about/edit', [App\Http\Controllers\Admin\AboutManagementController::class, 'edit'])->name('about.edit');
+    Route::put('/about/update', [App\Http\Controllers\Admin\AboutManagementController::class, 'update'])->name('about.update');
+
+    Route::get('/contacts', [App\Http\Controllers\Admin\ContactRequestController::class, 'index'])->name('contacts.index');
+    Route::get('/contacts/{contact}', [App\Http\Controllers\Admin\ContactRequestController::class, 'show'])->name('contacts.show');
+    Route::delete('/contacts/{contact}', [App\Http\Controllers\Admin\ContactRequestController::class, 'destroy'])->name('contacts.destroy');
     
     // Clear Cache
     Route::post('/cache/clear', [SettingController::class, 'clearCache'])->name('cache.clear');
