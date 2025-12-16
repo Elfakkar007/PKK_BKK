@@ -24,16 +24,18 @@
                         @enderror
                     </div>
 
-                    <!-- Misi -->
+                    <!-- Misi dengan TinyMCE -->
                     <div class="mb-4">
                         <h5 class="fw-bold mb-3">Misi</h5>
                         <textarea class="form-control @error('mission') is-invalid @enderror" 
                                   name="mission" 
+                                  id="missionEditor"
                                   rows="6" 
                                   placeholder="Tuliskan misi BKK...">{{ old('mission', $about->mission ?? '') }}</textarea>
                         @error('mission')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="text-muted">Gunakan editor untuk memformat teks (bold, list, dll)</small>
                     </div>
 
                     <!-- Program Kerja -->
@@ -130,6 +132,51 @@
 
 @push('scripts')
 <script>
+// Initialize TinyMCE for Mission field
+(function() {
+    'use strict';
+    
+    function initTinyMCE() {
+        if (typeof tinymce === 'undefined') {
+            console.error('TinyMCE tidak loaded!');
+            return;
+        }
+
+        if (tinymce.get('missionEditor')) {
+            tinymce.get('missionEditor').remove();
+        }
+
+        tinymce.init({
+            selector: '#missionEditor',
+            height: 400,
+            promotion: false,
+            branding: false,
+            menubar: 'edit view insert format',
+            plugins: 'advlist autolink lists link charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime help wordcount',
+            toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            
+            // Simplified config - no image upload needed for mission text
+            automatic_uploads: false,
+            
+            setup: function(editor) {
+                editor.on('init', function() {
+                    console.log('✓ TinyMCE Mission Editor berhasil diinisialisasi');
+                });
+                editor.on('change', function() {
+                    editor.save();
+                });
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTinyMCE);
+    } else {
+        initTinyMCE();
+    }
+})();
+
+// Program Kerja functions
 function addProgram() {
     const container = document.getElementById('programsContainer');
     const count = container.querySelectorAll('input').length + 1;

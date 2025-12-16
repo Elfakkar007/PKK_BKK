@@ -2,6 +2,30 @@
 
 @section('title', 'Tentang BKK')
 
+@push('styles')
+<style>
+/* Style untuk konten Misi dari TinyMCE */
+.mission-content ul, .mission-content ol {
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+.mission-content ul li, .mission-content ol li {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
+}
+
+.mission-content p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+.mission-content strong {
+    font-weight: 600;
+}
+</style>
+@endpush
+
 @section('content')
 <!-- Hero Section -->
 <section class="bg-primary text-white py-5">
@@ -51,9 +75,10 @@
                             </div>
                             <h3 class="fw-bold">Misi</h3>
                         </div>
-                        <p class="text-justify" style="line-height: 1.8;">
-                            {{ $about->mission }}
-                        </p>
+                        <div class="mission-content" style="line-height: 1.8;">
+                            {{-- Render HTML dari TinyMCE --}}
+                            {!! $about->mission !!}
+                        </div>
                     </div>
                 </div>
             </div>

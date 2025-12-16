@@ -64,6 +64,35 @@
 }
 </style>
 @endif
+
+<style>
+/* Style untuk konten TinyMCE agar tampil dengan baik */
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.post-content p {
+    margin-bottom: 1rem;
+}
+
+.post-content ul, .post-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.post-content h1, .post-content h2, .post-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.post-content a {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+</style>
 @endpush
 
 @section('content')
@@ -179,7 +208,8 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-5">
                         <div class="guide-content">
-                            {!! nl2br(e($post->content)) !!}
+                            {{-- PERBAIKAN: Gunakan {!! !!} untuk render HTML dari TinyMCE --}}
+                            {!! $post->content !!}
                         </div>
 
                         @php
@@ -208,7 +238,8 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
                         <div class="post-content" style="line-height: 1.8; font-size: 1.05rem;">
-                            {!! nl2br(e($post->content)) !!}
+                            {{-- PERBAIKAN: Gunakan {!! !!} untuk render HTML dari TinyMCE --}}
+                            {!! $post->content !!}
                         </div>
                     </div>
                 </div>
