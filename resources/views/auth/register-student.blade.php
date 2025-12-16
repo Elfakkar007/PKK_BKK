@@ -137,12 +137,17 @@
                                 <label for="major" class="form-label">Jurusan <span class="text-danger">*</span></label>
                                 <select class="form-select @error('major') is-invalid @enderror" 
                                         id="major" name="major" required>
-                                    <option value="">Pilih...</option>
-                                    <option value="TKJ" {{ old('major') == 'TKJ' ? 'selected' : '' }}>Teknik Komputer dan Jaringan</option>
-                                    <option value="RPL" {{ old('major') == 'RPL' ? 'selected' : '' }}>Rekayasa Perangkat Lunak</option>
-                                    <option value="MM" {{ old('major') == 'MM' ? 'selected' : '' }}>Multimedia</option>
-                                    <option value="OTKP" {{ old('major') == 'OTKP' ? 'selected' : '' }}>Otomatisasi Tata Kelola Perkantoran</option>
-                                    <option value="AKL" {{ old('major') == 'AKL' ? 'selected' : '' }}>Akuntansi dan Keuangan Lembaga</option>
+                                    <option value="">Pilih Jurusan...</option>
+                                    @php
+                                        $majors = \App\Models\Major::active()->get();
+                                    @endphp
+                                    @forelse($majors as $major)
+                                        <option value="{{ $major->code }}" {{ old('major') == $major->code ? 'selected' : '' }}>
+                                            {{ $major->name }}
+                                        </option>
+                                    @empty
+                                        <option value="" disabled>Tidak ada jurusan tersedia</option>
+                                    @endforelse
                                 </select>
                                 @error('major')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -192,7 +197,7 @@
                         <i class="bi bi-exclamation-triangle me-2"></i>
                         Registrasi sementara ditutup. Silakan hubungi admin untuk informasi lebih lanjut.
                     </div>
-                @endif
+                    @endif
                 </div>
             </div>
         </div>

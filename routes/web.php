@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CompanyManagementController;
 use App\Http\Controllers\Admin\AboutManagementController;
 use App\Http\Controllers\Admin\HighlightManagementController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\MajorManagementController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -75,40 +76,48 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
     // User Management
-    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
-    Route::get('/users/pending', [UserManagementController::class, 'pending'])->name('users.pending');
-    Route::patch('/users/{id}/approve', [UserManagementController::class, 'approve'])->name('users.approve');
-    Route::patch('/users/{id}/reject', [UserManagementController::class, 'reject'])->name('users.reject');
-    Route::delete('/users/{id}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserManagementController::class, 'index'])->name('index');
+        Route::get('/pending', [UserManagementController::class, 'pending'])->name('pending'); // Harus di atas /{id}
+        Route::get('/{id}', [UserManagementController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [UserManagementController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [UserManagementController::class, 'update'])->name('update');
+        Route::patch('/{id}/reset-password', [UserManagementController::class, 'resetPassword'])->name('reset-password');
+        Route::patch('/{id}/approve', [UserManagementController::class, 'approve'])->name('approve');
+        Route::patch('/{id}/reject', [UserManagementController::class, 'reject'])->name('reject');
+        Route::delete('/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
+    });
     
     // Vacancy Management (Admin Approval)
-    Route::get('/vacancies', [VacancyManagementController::class, 'index'])->name('vacancies.index');
-    Route::get('/vacancies/pending', [VacancyManagementController::class, 'pending'])->name('vacancies.pending');
-    Route::get('/vacancies/{id}', [VacancyManagementController::class, 'show'])->name('vacancies.show');
-    Route::patch('/vacancies/{id}/approve', [VacancyManagementController::class, 'approve'])->name('vacancies.approve');
-    Route::patch('/vacancies/{id}/reject', [VacancyManagementController::class, 'reject'])->name('vacancies.reject');
-    Route::delete('/vacancies/{id}', [VacancyManagementController::class, 'destroy'])->name('vacancies.destroy');
+    Route::prefix('vacancies')->name('vacancies.')->group(function () {
+        Route::get('/', [VacancyManagementController::class, 'index'])->name('index');
+        Route::get('/pending', [VacancyManagementController::class, 'pending'])->name('pending');
+        Route::get('/{id}', [VacancyManagementController::class, 'show'])->name('show');
+        Route::patch('/{id}/approve', [VacancyManagementController::class, 'approve'])->name('approve');
+        Route::patch('/{id}/reject', [VacancyManagementController::class, 'reject'])->name('reject');
+        Route::delete('/{id}', [VacancyManagementController::class, 'destroy'])->name('destroy');
+    });
     
     // Post Management
     Route::resource('posts', PostManagementController::class);
     Route::post('/posts/upload-image', [PostManagementController::class, 'uploadImage'])
-    ->name('posts.upload-image');
-    Route::post('/admin/posts/upload-image', [PostManagementController::class, 'uploadImage'])
-    ->name('admin.posts.upload-image');
-    Route::post('/admin/posts/upload-image', [PostManagementController::class, 'uploadImage'])
-    ->name('admin.posts.upload-image');
+        ->name('posts.upload-image');
     
     // Company Management
-    Route::get('/companies', [CompanyManagementController::class, 'index'])->name('companies.index');
-    Route::get('/companies/{id}', [CompanyManagementController::class, 'show'])->name('companies.show');
-    Route::get('/companies/{id}/edit', [CompanyManagementController::class, 'edit'])->name('companies.edit');
-    Route::put('/companies/{id}', [CompanyManagementController::class, 'update'])->name('companies.update');
+    Route::prefix('companies')->name('companies.')->group(function () {
+        Route::get('/', [CompanyManagementController::class, 'index'])->name('index');
+        Route::get('/{id}', [CompanyManagementController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [CompanyManagementController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [CompanyManagementController::class, 'update'])->name('update');
+    });
     
     // About Page Management
     Route::get('/about', [AboutManagementController::class, 'edit'])->name('about.edit');
     Route::put('/about', [AboutManagementController::class, 'update'])->name('about.update');
-        // Clear Cache
+    
+    // Clear Cache
     Route::post('/cache/clear', [SettingController::class, 'clearCache'])->name('cache.clear');
+    
     // Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('index');
@@ -117,5 +126,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
         // Optional: API endpoints for getting settings
         Route::get('/api/{key}', [SettingController::class, 'getSetting'])->name('api.get');
         Route::get('/api', [SettingController::class, 'getAllSettings'])->name('api.all');
+    });
+    Route::prefix('majors')->name('majors.')->group(function () {
+        Route::get('/', [MajorManagementController::class, 'index'])->name('index');
+        Route::get('/create', [MajorManagementController::class, 'create'])->name('create');
+        Route::post('/', [MajorManagementController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [MajorManagementController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MajorManagementController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MajorManagementController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/toggle-status', [MajorManagementController::class, 'toggleStatus'])->name('toggle-status');
     });
 });

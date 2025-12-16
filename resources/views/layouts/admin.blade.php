@@ -141,6 +141,10 @@
                         @endif
                     </a>
                 </li>
+
+                <a href="{{ route('admin.majors.index') }}" class="nav-link">
+                    <i class="bi bi-mortarboard me-2"></i>Data Master Jurusan
+                </a>
                 
                 <li class="nav-item">
                     <a href="{{ route('admin.vacancies.index') }}" 

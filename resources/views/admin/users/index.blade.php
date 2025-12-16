@@ -93,6 +93,21 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm">
+                                <!-- View Button -->
+                                <a href="{{ route('admin.users.show', $user->id) }}" 
+                                   class="btn btn-info" 
+                                   title="Lihat Detail">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                
+                                <!-- Edit Button -->
+                                <a href="{{ route('admin.users.edit', $user->id) }}" 
+                                   class="btn btn-primary" 
+                                   title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                
+                                <!-- Approve Button (if pending) -->
                                 @if($user->status === 'pending')
                                     <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" class="d-inline">
                                         @csrf
@@ -105,6 +120,8 @@
                                         </button>
                                     </form>
                                 @endif
+                                
+                                <!-- Delete Button -->
                                 <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="d-inline">
                                     @csrf
                                     @method('DELETE')

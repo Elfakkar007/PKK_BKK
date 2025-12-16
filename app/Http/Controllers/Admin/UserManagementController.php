@@ -7,11 +7,11 @@ use App\Models\User;
 use App\Notifications\AccountApprovedNotification;
 use App\Notifications\AccountRejectedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserManagementController extends Controller
 {
-    
-
     public function index(Request $request)
     {
         $role = $request->get('role', 'all');
@@ -52,6 +52,78 @@ class UserManagementController extends Controller
             ->paginate(20);
 
         return view('admin.users.pending', compact('pendingUsers'));
+    }
+
+    public function show($id)
+    {
+        $user = User::with(['student', 'company'])->findOrFail($id);
+        
+        if ($user->role === 'admin') {
+            return back()->with('error', 'Tidak dapat melihat detail akun admin.');
+        }
+
+        return view('admin.users.show', compact('user'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::with(['student', 'company'])->findOrFail($id);
+        
+        if ($user->role === 'admin') {
+            return back()->with('error', 'Tidak dapat mengedit akun admin.');
+        }
+
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($user->role === 'admin') {
+            return back()->with('error', 'Tidak dapat mengedit akun admin.');
+        }
+
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'unique:users,email,' . $id],
+            'status' => ['required', 'in:pending,approved,rejected'],
+            'password' => ['nullable', 'confirmed', Password::min(8)],
+        ]);
+
+        $updateData = [
+            'email' => $validated['email'],
+            'status' => $validated['status'],
+        ];
+
+        // Update password if provided
+        if (!empty($validated['password'])) {
+            $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($updateData);
+
+        return redirect()
+            ->route('admin.users.show', $user->id)
+            ->with('success', 'Data user berhasil diperbarui.');
+    }
+
+    public function resetPassword(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'new_password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $user = User::findOrFail($id);
+        
+        if ($user->role === 'admin') {
+            return back()->with('error', 'Tidak dapat mereset password admin.');
+        }
+
+        $user->update([
+            'password' => Hash::make($validated['new_password'])
+        ]);
+
+        return back()->with('success', 'Password user berhasil direset.');
     }
 
     public function approve($id)

@@ -206,8 +206,7 @@
                         <div>
                             <h6 class="fw-bold mb-1">Jam Operasional</h6>
                             <p class="mb-0">
-                                Senin - Jumat: 07:00 - 15:00 WIB<br>
-                                Sabtu: 07:00 - 12:00 WIB
+                                Senin - Jumat: 06:45 - 14:50 WIB<br>
                             </p>
                         </div>
                     </div>
