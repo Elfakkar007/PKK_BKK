@@ -64,10 +64,12 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center">
                         @if($company->logo)
-                            <img src="{{ Storage::url($company->logo) }}" 
-                                 alt="{{ $company->name }}" 
-                                 class="img-fluid rounded mb-3"
-                                 style="max-height: 120px; max-width: 100%; object-fit: contain;">
+                            <div class="d-flex justify-content-center align-items-center mb-3" style="height: 120px; width: 100%;">
+                                <img src="{{ Storage::url($company->logo) }}" 
+                                     alt="{{ $company->name }}" 
+                                     class="img-fluid rounded"
+                                     style="max-height: 120px; max-width: 90%; object-fit: contain; object-position: center;">
+                            </div>
                         @else
                             <div class="bg-primary text-white rounded d-inline-flex align-items-center justify-content-center mb-3" 
                                  style="width: 120px; height: 120px;">

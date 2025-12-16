@@ -306,13 +306,7 @@ php artisan queue:restart
 ```bash
 # Rollback and re-run
 php artisan migrate:fresh --seed
-```
-
-## Support
-
-Untuk bantuan lebih lanjut, hubungi:
-- Email: admin@bkk-smkn1purwosari.sch.id
-- Website: https://bkk-smkn1purwosari.sch.id
+``` 
 
 ## License
 
