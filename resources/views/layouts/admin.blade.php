@@ -14,94 +14,177 @@
     
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
-    <style>
-        :root {
-            --sidebar-width: 260px;
-        }
-        
-        body {
-            background-color: #f8f9fa;
-        }
-        
+  /* Admin Panel Professional Styling */
+/* Admin Panel Professional Styling */
+<style>
+    :root {
+        --sidebar-width: 260px;
+        --primary-color: #1e40af;
+        --dark-color: #1e293b;
+    }
+    
+    body {
+        background-color: #f8fafc;
+    }
+    
+    /* Sidebar - Professional Navy Theme */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: var(--sidebar-width);
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: transform 0.3s;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar-brand {
+        padding: 1.5rem 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .sidebar-brand h5 {
+        color: white;
+        margin-bottom: 0.25rem;
+    }
+    
+    .sidebar-nav {
+        padding: 1rem 0;
+    }
+    
+    .sidebar-nav .nav-link {
+        color: rgba(255,255,255,0.8);
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+        font-weight: 500;
+    }
+    
+    .sidebar-nav .nav-link:hover {
+        color: white;
+        background: rgba(30, 64, 175, 0.2);
+        border-left-color: #3b82f6;
+    }
+    
+    .sidebar-nav .nav-link.active {
+        color: white;
+        background: rgba(30, 64, 175, 0.3);
+        border-left-color: #60a5fa;
+    }
+    
+    .sidebar-nav .nav-link i {
+        width: 20px;
+        text-align: center;
+    }
+    
+    .main-content {
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+    }
+    
+    /* Topbar - Clean White */
+    .topbar {
+        background: white;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .topbar h5 {
+        color: var(--dark-color);
+        font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            overflow-y: auto;
-            z-index: 1000;
-            transition: transform 0.3s;
+            transform: translateX(-100%);
         }
         
-        .sidebar-brand {
-            padding: 1.5rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .sidebar-nav {
-            padding: 1rem 0;
-        }
-        
-        .sidebar-nav .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar-nav .nav-link:hover {
-            color: white;
-            background: rgba(255,255,255,0.1);
-            border-left-color: white;
-        }
-        
-        .sidebar-nav .nav-link.active {
-            color: white;
-            background: rgba(255,255,255,0.2);
-            border-left-color: white;
+        .sidebar.show {
+            transform: translateX(0);
         }
         
         .main-content {
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
+            margin-left: 0;
         }
-        
-        .topbar {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-        }
-        
-        .card {
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .stat-card {
-            transition: transform 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-    </style>
+    }
+    
+    /* Cards */
+    .card {
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        border-radius: 0.75rem;
+    }
+    
+    .stat-card {
+        transition: transform 0.3s;
+        border: none;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+    
+    /* Icon Circles */
+    .card-body .rounded-circle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .card-body .bg-light {
+        background-color: #f1f5f9 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Icon sizing */
+    .card-body i.bi {
+        line-height: 1;
+        display: inline-block;
+    }
+    
+    /* Badges in Sidebar */
+    .sidebar .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    /* Professional Button Styling */
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .btn-primary:hover {
+        background-color: #1e3a8a;
+        border-color: #1e3a8a;
+    }
+    
+    /* Table Styling */
+    .table {
+        border-color: #e2e8f0;
+    }
+    
+    .table thead th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-weight: 600;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8fafc;
+    }
+</style>
     <script src="https://cdn.tiny.cloud/1/p2yrnsfex3ry06c2qtwem35ntso2hnvij8k49w50yxywl851/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     
     @stack('styles')

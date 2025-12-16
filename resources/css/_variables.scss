@@ -1,12 +1,38 @@
-// Custom Bootstrap Variables
-$primary: #667eea;
-$success: #10b981;
-$danger: #ef4444;
-$warning: #f59e0b;
-$info: #3b82f6;
+// Custom Bootstrap Variables - Professional Theme
+$primary: #1e40af;      // Navy Blue - professional dan terpercaya
+$secondary: #64748b;    // Slate Gray - netral dan modern
+$success: #059669;      // Emerald Green - positif tanpa terlalu mencolok
+$danger: #dc2626;       // Red - untuk alert
+$warning: #d97706;      // Amber - untuk peringatan
+$info: #0284c7;         // Sky Blue - informatif
 
+// Additional Professional Colors
+$dark: #1e293b;         // Dark Slate - untuk teks gelap
+$light: #f1f5f9;        // Light Gray - untuk background
+$body-bg: #ffffff;
+$body-color: #334155;
+
+// Border Radius
 $border-radius: 0.5rem;
-$border-radius-lg: 1rem;
+$border-radius-lg: 0.75rem;
+$border-radius-sm: 0.25rem;
+
+// Shadows
+$box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+$box-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+// Card
+$card-border-color: #e2e8f0;
+$card-cap-bg: #f8fafc;
+
+// Navbar
+$navbar-light-color: #475569;
+$navbar-light-hover-color: $primary;
+$navbar-light-active-color: $primary;
+
+// Buttons
+$btn-font-weight: 600;
+$btn-border-radius: $border-radius;
 
 // Import Bootstrap
 @import '../../node_modules/bootstrap/scss/bootstrap';

@@ -137,17 +137,40 @@
 </section>
 
 <!-- CTA Section -->
-<section class="py-5 bg-primary text-white">
-    <div class="container text-center">
-        <h3 class="fw-bold mb-3">Perusahaan Anda Ingin Bergabung?</h3>
-        <p class="lead mb-4">
-            Daftarkan perusahaan Anda dan temukan talenta terbaik dari SMKN 1 Purwosari
-        </p>
-        @guest
-            <a href="{{ route('register.company') }}" class="btn btn-light btn-lg">
-                <i class="bi bi-building-add me-2"></i>Daftar Perusahaan
-            </a>
-        @endguest
+<!-- CTA Section - Professional & Seamless -->
+<section class="py-5 bg-primary text-white" style="margin-bottom: 0;">
+    <div class="container text-center py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-3">Perusahaan Anda Ingin Bergabung?</h3>
+                <p class="lead mb-4">
+                    Daftarkan perusahaan Anda dan temukan talenta terbaik dari SMKN 1 Purwosari
+                </p>
+                @guest
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{{ route('register.company') }}" class="btn btn-light btn-lg px-5 py-3">
+                            <i class="bi bi-building-add me-2"></i>Daftar Perusahaan
+                        </a>
+                        <a href="{{ route('register.student') }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                            <i class="bi bi-person-plus me-2"></i>Daftar Siswa/Alumni
+                        </a>
+                    </div>
+                    <p class="text-white-50 mt-4 mb-0">
+                        <small>Sudah punya akun? <a href="{{ route('login') }}" class="text-white fw-bold text-decoration-underline">Login di sini</a></small>
+                    </p>
+                @else
+                    @if(Auth::user()->isStudent())
+                        <a href="{{ route('vacancies') }}" class="btn btn-light btn-lg px-5 py-3">
+                            <i class="bi bi-briefcase me-2"></i>Lihat Lowongan Kerja
+                        </a>
+                    @elseif(Auth::user()->isCompany())
+                        <a href="{{ route('company.vacancies.create') }}" class="btn btn-light btn-lg px-5 py-3">
+                            <i class="bi bi-plus-circle me-2"></i>Buat Lowongan Baru
+                        </a>
+                    @endif
+                @endguest
+            </div>
+        </div>
     </div>
 </section>
 @endsection

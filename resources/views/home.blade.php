@@ -596,9 +596,9 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 @endif
 
-<!-- Call to Action Section -->
-<section class="py-5 bg-primary text-white">
-    <div class="container text-center">
+<!-- Call to Action Section - Updated untuk seamless transition -->
+<section class="py-5 bg-primary text-white" style="margin-bottom: 0;">
+    <div class="container text-center py-4">
         <h2 class="fw-bold mb-3">Siap Memulai Karir Anda?</h2>
         <p class="lead mb-4">Bergabunglah dengan ribuan alumni yang telah berhasil berkarir melalui BKK SMKN 1 Purwosari</p>
         @guest
